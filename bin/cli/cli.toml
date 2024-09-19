@@ -1,0 +1,14 @@
+rpcserver = "127.0.0.1:38131"
+rpcuser = "test"
+rpcpassword = "test"
+rpccert = ""
+notls = true
+tlsskipverify = true
+proxy = ""
+proxyuser = ""
+proxypass = ""
+timeout = "30s"
+
+debug = false
+jq = true
+    

@@ -1,0 +1,36 @@
+#configFile="" #Your config.toml profile directory
+#appDataDir="" # Your DB storage path
+#logDir="" # log path
+#network="testnet" #network testnet,testnet,testnet default testnet
+network="testnet"
+#Blockdagd
+#QServer="127.0.0.1:8131"
+#QUser="admin"
+#QPass="123456"
+QNoTLS=true #Whether to start TLS corresponding to blockdag
+QTLSSkipVerify=true
+WalletPass="public" #Wallet encryption code default public
+
+MinTxFee=20000   # The minimum transaction fee in bdag/KB default 20000 (aka. 0.0002 BDAG/KB)
+Confirmations=10   # Number of block confirmations
+
+#web model
+#listeners=["127.0.0.1:8130"]
+#rpcUser=""
+#rpcPass=""
+#ui=true
+
+
+BlockdagdSelect = "local"
+
+[[Blockdagds]]
+  Name = "local"
+  RPCUser = "test"
+  RPCPassword = "test"
+  RPCServer = "127.0.0.1:38131"
+  RPCCert = ""
+  NoTLS = true
+  TLSSkipVerify = true
+  Proxy = ""
+  ProxyUser = ""
+  ProxyPass = ""

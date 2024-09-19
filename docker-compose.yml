@@ -24,5 +24,5 @@ services:
       --miningaddr=${MINNING_ADDRESS}
       --generate
       --walletpass=test
-      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.port=18546"
+      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
       --miningstatesync

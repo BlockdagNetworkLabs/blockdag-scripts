@@ -5,7 +5,7 @@ PASSPHRASE="test"
 PUBPASS="public"
 SEED_CONFIRMATION="OK"
 
-cd /data/finl_blockdag/test/blockdag/bin/wallet
+cd /home/ubuntu/blockdag/bin/wallet
 # Create the expect script
 expect << EOF
 set timeout -1

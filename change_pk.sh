@@ -13,7 +13,7 @@ addresses=(
 "7a175ab2efbac73472bd0a28477b819a661507af0cc7a3f1b608f9f50d950d53"
 )
 
-pushd /data/finl_blockdag/test/blockdag/bin/qx
+pushd /home/ubuntu/blockdag/bin/qx
 # Iterate over the array and print each address
 for address in "${addresses[@]}"; do
 pk_addr=$(./qx ec-to-public $address | ./qx ec-to-pkaddr -v=testnet)

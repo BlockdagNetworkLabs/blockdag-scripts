@@ -1,4 +1,4 @@
 #!/bin/bash
-pushd /home/ubuntu/blockdag/bin/wallet
+pushd /home/ubuntu/blockdag_scripts/bin/wallet
 ./blockdag-wallet qc updateblock
 popd

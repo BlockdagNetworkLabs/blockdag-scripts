@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd /home/ubuntu/blockdag/bin/wallet
+pushd /data/finl_blockdag/test/blockdag/bin/wallet
 ./blockdag-wallet qc createnewaccount test4 test 
 sleep 2
 receiver_addr=$(./blockdag-wallet qc getnewaddress test4)

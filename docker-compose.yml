@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  bdag:
+    image: blockdagnetwork/bdag:latest
+    container_name: bdag
+    ports:
+      - "38131:38131"
+      - "8130:8130"
+      - "18545:18545"
+      - "18546:18546"
+      - "18150:18150"
+    volumes:
+      - /data/bdag/data1:/bdag/data
+      - /data/bdag/logs1:/bdag/logs
+    command: >
+      ./bdag
+      --testnet
+      --rpclisten=0.0.0.0:38131
+      --notls
+      --rpcuser=test
+      --rpcpass=test
+      --miner
+      --miningaddr=${MINNING_ADDRESS}
+      --generate
+      --walletpass=test
+      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.port=18546"
+      --miningstatesync

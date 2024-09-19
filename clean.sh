@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-rm -rf /home/ubuntu/blockdag/bin/bdag/data 
-rm -rf /home/ubuntu/blockdag/bin/bdag/logs 
-rm -rf  /home/ubuntu/.dagwallet 
+rm -rf /data/finl_blockdag/test/blockdag/bin/bdag/data 
+rm -rf /data/finl_blockdag/test/blockdag/bin/bdag/logs 
+rm -rf  /data/finl_blockdag/test/.dagwallet 
 rm -rf ~/.dagwallet

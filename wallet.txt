@@ -5,17 +5,17 @@ Do you want to add an additional layer of encryption for public data? (n/no/y/ye
 pubPass: public
 Do you have an existing wallet seed you want to use? (n/no/y/yes) [no]: n
 Your wallet generation seed is:
-d4cfa1f39b6ef3b7e9cc969eb9c4c0edfb95c3a7c8291aeebaf357071ef7a863
-Your wallet generation seed is: d4cfa1f39b6ef3b7e9cc969eb9c4c0edfb95c3a7c8291aeebaf357071ef7a863
+be32fd36d9562b8048866ed14aa17e273cd5fcac36916fffda39cffe311e0356
 IMPORTANT: Keep the seed in a safe place as you
-will NOT be able to restore your wallet without it.
+will NOT be able to restore your wallet without it.Your wallet generation seed is: be32fd36d9562b8048866ed14aa17e273cd5fcac36916fffda39cffe311e0356
+
 Please keep in mind that anyone who has access
 to the seed can also restore your wallet thereby
 giving them access to all your funds, so it is
 imperative that you keep it in a secure location.
 Once you have stored the seed in a safe and secure location, enter "OK" to continue: OK
 Creating the wallet...
-pri:a27f504d6395320533d1ae2b148adab0690ae763abe063dc6fd780731b3dc2ae
+pri:cc971ee76db95d65ce74badbbddc3c5032c4be1028b210b7a1b89d99c814520c
 The wallet has been created successfully.
 createWallet succ
-Rk8KXZXG4qknFHnRLDg7YFv7T1WeXybe6DwK1CAUTUA7ZNw3gV1AF
+Tk2bN9mYCmAnXJXi8KqvDzpgz4LXgegWN3h5bJjJnWfVEzwM7jxvF

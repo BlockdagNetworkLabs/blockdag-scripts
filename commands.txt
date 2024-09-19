@@ -1,1 +1,0 @@
-docker run --rm -it --name bdag bdag:latest ./bdag --testnet --rpclisten=0.0.0.0:38131 --notls --rpcuser=test --rpcpass=test --miner --miningaddr=Rk8KXZXG4qknFHnRLDg7YFv7T1WeXybe6DwK1CAUTUA7ZNw3gV1AF  --generate --walletpass=test --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.port=18546"  --miningstatesync

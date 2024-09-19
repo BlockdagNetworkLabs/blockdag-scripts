@@ -19,7 +19,7 @@ else
 fi
 
 # make an unsigned tx for transfer utxo to evm and then sign it
-pushd /data/finl_blockdag/test/blockdag/bin/qx
+pushd /home/ubuntu/blockdag/bin/qx
 signed_tx_hash=$(./qx tx-encode -v 1 -i $utxo:1:4294967295:pubkey -l 0 -o $pk_addr:$amount:1:pubkey -o $pk_addr:299.99992700:0:pubkey | ./qx tx-sign -k $private_key -n testnet)
 popd
 
@@ -27,7 +27,7 @@ sleep 3
 echo "signed tx"
 echo $signed_tx_hash
 # # send a raw tx for transfer
-pushd /data/finl_blockdag/test/blockdag/bin/cli
+pushd /home/ubuntu/blockdag/bin/cli
 tx_id=$(./blockdag-cli sendRawTransaction $signed_tx_hash true)
 sleep 2
 echo "transaction id is : $tx_id"

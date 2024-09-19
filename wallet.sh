@@ -5,7 +5,7 @@ private_key=$(cat wallet.txt|grep -oP 'pri:\K[^\s]+')
 
 echo "private Key is : $private_key"
 
-pushd /data/finl_blockdag/test/blockdag/bin/qx
+pushd /home/ubuntu/blockdag/bin/qx
 echo "PK Address is : "
 pk_addr=$(./qx ec-to-public $private_key | ./qx ec-to-pkaddr -v=testnet)
 popd

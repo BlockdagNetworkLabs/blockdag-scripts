@@ -26,3 +26,4 @@ services:
       --walletpass=test
       --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
       --miningstatesync
+       --addpeer=/ip4/3.14.177.55/tcp/18150/p2p/16Uiu2HAmKr4kFun2dLwVZwjS3Q8VfkAcqFm4W94RyBYA3dQ4sn3n

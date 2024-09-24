@@ -37,7 +37,10 @@ git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
 ```
 ### Step 2: Setup the Repository
 
-After cloning the repository, you need to update the paths in all relevant files to reflect your current repository location.
+After cloning the repository, you need to update the paths in all relevant files to reflect your current repository location. In the files below:
+ - clean.sh
+ - generate_wallet.sh
+ - wallet.sh
 
 For example, if you cloned the repository into `/home/yourusername/projects/blockdag/blockdag-scripts`, you should replace all instances of the old path (`/home/ubuntu/blockdag-scripts/`) in the files with your new path (`/home/yourusername/projects/blockdag/blockdag-scripts`).
 
@@ -80,3 +83,75 @@ Once the node is running, you can check the logs to monitor its status. Follow t
 sudo docker ps -a
 sudo docker logs -f CONTAINERID
 ```
+---
+## Script Descriptions
+
+Below is a brief explanation of each script available in the repository:
+
+---
+
+### `blockdag.sh`
+
+This script:
+
+- Creates a wallet for the BlockDAG.
+- Starts the full node and connects it to the BlockDAG testnet server.
+- Configures the miner to use the created wallet for mining activities.
+
+---
+
+### `check_balance.sh`
+
+This script:
+
+- Checks the balance of the wallet stored in the `wallet.txt` file.
+- It can be used to monitor how many coins or assets the current wallet holds.
+
+---
+
+### `clean.sh`
+
+This script:
+
+- Cleans and deletes the old wallet.
+- It is useful when you need to reset or refresh the wallet information.
+
+---
+
+### `generate_wallet.sh`
+
+This script:
+
+- Generates a new wallet.
+- The generated wallet can then be used for transactions or mining.
+
+---
+
+### `install_docker.sh`
+
+This script:
+
+- Installs the Docker daemon on a Linux system.
+- It ensures that Docker is set up and ready to be used for running the BlockDAG node.
+
+---
+
+### `node.sh`
+
+This script:
+
+- Starts the BlockDAG node using Docker Compose.
+- Takes the `miner address` as a parameter to initiate the full node with that address.
+
+---
+
+### `wallet.sh`
+
+This script:
+
+- Deletes the existing wallet.
+- Creates a new wallet and stores the wallet's details in the `wallet.txt` file.
+
+---
+
+Each of these scripts plays a crucial role in managing your BlockDAG node and wallet operations. Make sure to run them with the appropriate permissions (e.g., using `sudo` if needed) and ensure Docker is correctly installed and running before interacting with the node.

@@ -48,25 +48,51 @@ git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
 
 After cloning the repository, you need to update the paths in all relevant files to reflect your current repository location. In the files below:
  - clean.sh
- - generate_wallet.sh
  - wallet.sh
 
 For example, if you cloned the repository into `/home/yourusername/projects/blockdag/blockdag-scripts`, you should replace all instances of the old path (`/home/ubuntu/blockdag-scripts/`) in the files with your new path (`/home/yourusername/projects/blockdag/blockdag-scripts`).
 
-### Step 3: Running the Node
+### Step 3: Create a new wallet
+
+To create a new wallet, run the following command:
+```
+./wallet.sh
+```
+
+To create a wallet with existing generation seed, run the following command:
+```
+./wallet.sh YOUR_WALLET_SEED
+```
+> **NOTE**: 
+> - The wallet seed is unique to each wallet. If the seed is lost, the wallet and its contents are permanently lost. Store it somewhere safely.
+> - The generated wallet seed will be stored in the `wallet.txt` file. Keep this file secure somewhere, as it contains wallet seed information needed to recover your wallet. 
+
+
+### Step 4: Running the Node
 
 To run a full BlockDAG node in a testnet environment with mining enabled, follow these commands:
+
+if you have a wallet created then run the following command:
+
+```
+./node.sh YOUR_PUBLIC_ADDRESS
+```
+>**Note :** You can find your public address at the end of the wallet.txt file
+
+if you want to create a new wallet to run the node, run the following command:
 
 ```
 ./blockdag.sh
 ```
->**Note**: If the above command does not work as expected, try running it with sudo for elevated permissions:
+>**Note**: This command will delete all the wallet information and create a new wallet for the Node. This command is to be run for the first time only.
+
+>**Note**: If the above command does not work as expected, try running it with sudo for elevated permissions.
 
 ```
-sudo ./blockdag.sh
+sudo ./node.sh YOUR_PUBLIC_ADDRESS
 ```
 
-### Step 4: Checking Node Logs
+### Step 5: Checking Node Logs
 
 Once the node is running, you can check the logs to monitor its status. Follow these steps:
 
@@ -97,7 +123,6 @@ sudo docker logs -f CONTAINERID
 
 Below is a brief explanation of each script available in the repository:
 >**Note**: All scripts listed below are only compatible with Linux systems. Ensure you're running these on a Linux environment for proper functionality.
-
 
 ---
 

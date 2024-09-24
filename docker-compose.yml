@@ -11,8 +11,8 @@ services:
       - "18546:18546"
       - "18150:18150"
     volumes:
-      - /data/bdag/data1:/bdag/data
-      - /data/bdag/logs1:/bdag/logs
+      - ./bin/bdag/data:/bdag/data
+      - ./bin/bdag/logs:/bdag/logs
     command: >
       ./bdag
       --testnet

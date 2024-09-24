@@ -1,11 +1,21 @@
 #!/bin/bash
 
+# Check if the seed is passed as an argument
+if [ -z "$1" ]; then
+    echo "Usage: $0 <existing_seed>"
+    exit 1
+fi
+
+# Assign the passed argument to EXISTING_SEED
+EXISTING_SEED="$1"
+
 # Define the wallet passphrase and other inputs
 PASSPHRASE="test"
 PUBPASS="public"
 SEED_CONFIRMATION="OK"
 
 cd ./bin/wallet
+
 # Create the expect script
 expect << EOF
 set timeout -1
@@ -30,26 +40,23 @@ send -- "n\r"
 expect -exact "n\r
 pubPass: $PUBPASS\r
 Do you have an existing wallet seed you want to use? (n/no/y/yes) \[no\]: "
-send -- "n\r"
+send -- "y\r"
 
-# Display the generated seed and prompt to confirm storage
-expect -exact "n\r
-Your wallet generation seed is:\r"
-expect -re {[a-f0-9]{64}}
-set seed \$expect_out(0,string)
-puts "Your wallet generation seed is: \$seed"
+# Enter the existing wallet seed (passed as an argument)
+expect -exact "y\r
+Enter existing wallet seed: "
+send -- "$EXISTING_SEED\r"
 
-# Important notice and prompt to confirm
+# Wallet creation message and private key extraction
 expect -exact "\r
-IMPORTANT: Keep the seed in a safe place as you\r
-will NOT be able to restore your wallet without it.\r
-Please keep in mind that anyone who has access\r
-to the seed can also restore your wallet thereby\r
-giving them access to all your funds, so it is\r
-imperative that you keep it in a secure location.\r
-Once you have stored the seed in a safe and secure location, enter \"OK\" to continue: "
-send -- "$SEED_CONFIRMATION\r"
+Creating the wallet...\r"
+expect -re {pri:[a-f0-9]{64}}
+set private_key \$expect_out(0,string)
+puts "Private key is: \$private_key"
+
+# Final success message
+expect -exact "The wallet has been created successfully.\r
+createWallet succ\r"
 
 expect eof
 EOF
-

@@ -1,5 +1,14 @@
 # BlockDAG Node Setup Documentation
 
+## Table of Contents
+1. [Hardware Requirements](#hardware-requirements)
+2. [Setup Process](#setup-process)
+   - [Prerequisites](#prerequisites)
+   - [Step-by-Step Instructions](#step-by-step-instructions)
+3. [Script Descriptions](#script-descriptions)
+
+---
+
 ## Hardware Requirements
 
 - **CPU**: Minimum 4 cores (4+ cores recommended for mining).

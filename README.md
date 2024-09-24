@@ -87,6 +87,8 @@ sudo docker logs -f CONTAINERID
 ## Script Descriptions
 
 Below is a brief explanation of each script available in the repository:
+>**Note**: All scripts listed below are only compatible with Linux systems. Ensure you're running these on a Linux environment for proper functionality.
+
 
 ---
 

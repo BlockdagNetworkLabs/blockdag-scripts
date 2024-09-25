@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  bdag:
+    image: blockdagnetwork/bdag:latest
+    container_name: blockdag-testnet-network
+    ports:
+      - "38131:38131"
+      - "8130:8130"
+      - "18545:18545"
+      - "18546:18546"
+      - "18150:18150"
+    volumes:
+      - ./bin/bdag/data:/bdag/data
+      - ./bin/bdag/logs:/bdag/logs
+    command: >
+      ./bdag
+      --testnet
+      --rpclisten=0.0.0.0:38131
+      --notls
+      --rpcuser=test
+      --rpcpass=test
+      --miner
+      --miningaddr=${MINNING_ADDRESS}
+      --generate
+      --walletpass=test
+      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
+      --miningstatesync
+       --addpeer=/ip4/3.14.177.55/tcp/18150/p2p/16Uiu2HAmKr4kFun2dLwVZwjS3Q8VfkAcqFm4W94RyBYA3dQ4sn3n

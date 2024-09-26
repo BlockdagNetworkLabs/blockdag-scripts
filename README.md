@@ -16,11 +16,15 @@
 - **Memory (RAM)**: At least 8GB (8GB+ recommended).
 - **Disk Space**: Minimum 20GB of free disk space. More storage is recommended depending on the size of the blockchain and logs.
 - **Network**: A stable internet connection with sufficient bandwidth.
-
 ---
 
 ## Setup Process: Running a BlockDAG Node
 To ensure smooth setup and operation of the BlockDAG node, the following software must be installed and configured on your system:
+
+### Supported Operating Systems
+
+- **Ubuntu**: 18.04 LTS or later
+- **macOS**: 13 (Ventura) or later
 
 ### Prerequisites
 
@@ -211,6 +215,7 @@ This script:
 
 - Installs the Docker daemon on a Linux system.
 - It ensures that Docker is set up and ready to be used for running the BlockDAG node.
+>**Note**: This script is only compatible with `Ubuntu 20.04` or higher.
 
 ---
 

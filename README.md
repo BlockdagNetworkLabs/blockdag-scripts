@@ -33,30 +33,30 @@ To ensure smooth setup and operation of the BlockDAG node, the following softwar
 2. **Git** : Git is required for version control and managing repositories. You can install Git by following these steps:
  - For Debian/Ubuntu-based systems:
    ```
-   apt update
-   apt install git
+   sudo apt update
+   sudo apt install git
    ```
  - For MacOS, install Git using Homebrew:
    ```
-   brew install git
+   sudo brew install git
    ```
 3. **Wget**
 Wget is used to transfer data from or to a server and is often required for HTTP requests. To install Wget, use the following commands based on your operating system:
  - For **Debian/Ubuntu-based** systems:
 
    ```
-   apt update
-   apt install wget
+   sudo apt update
+   sudo apt install wget
    ```
  - For **MacOS**, install cURL using Homebrew:
    ```
-   brew install wget
+   sudo brew install wget
    ```
 4. **System Update and Required Package Installation for Linux**: Run the following commands to update your package list and install `expect` (a tool often used for automating interactive tasks in the terminal):
 
     ```bash
-    apt update
-    apt install expect
+    sudo apt update
+    sudo apt install expect
     ```
 
 Once these prerequisites are installed, follow the steps below to run a full BlockDAG node.

@@ -7,6 +7,7 @@
    - [Step-by-Step Instructions](#step-by-step-instructions)
    - [Stopping the node](#stopping-and-cleaning-up-a-running-blockdag-node)
 3. [Script Descriptions](#script-descriptions)
+4. [Restart the blockdag network with updated image](#restart-the-blockdag-network-with-updated-image)
 
 ---
 
@@ -241,3 +242,40 @@ The `wallet.sh` script provides the following functionalities:
 ---
 
 Each of these scripts plays a crucial role in managing your BlockDAG node and wallet operations. Make sure to run them with the appropriate permissions (e.g., using `sudo` if needed) and ensure Docker is correctly installed and running before interacting with the node.
+
+
+
+## Restart the blockdag network with updated image
+
+### restart current network
+
+  - To restart the blockdag network without cleanup run the following commands
+  - first choose the operating system linux/mac
+  - for linux :
+  ```bash
+      cd linux
+      ./restart.sh
+  ```
+  - for mac :
+  ```bash
+     cd mac
+     ./restart.sh
+  ```
+### restart with cleanup
+
+  - To restart the blockdag network with cleanup run the following commands
+  - first choose the operating system linux/mac
+  - for linux :
+  ```bash
+      cd linux
+      ./restartWithCleanup.sh
+  ```
+  - for mac :
+  ```bash
+     cd mac
+     ./restartWithCleanup.sh
+  ```
+>**Note:**
+> - Both restart scripts update the latest Docker image.
+> - The restart.sh script restarts the network from where it was previously stopped, preserving the current state.
+> - The restartWithCleanup.sh script removes the old database and begins syncing the node from the genesis block, while retaining the wallet and balance.

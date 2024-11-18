@@ -6,7 +6,6 @@ services:
     container_name: blockdag-testnet-network
     ports:
       - "38131:38131"
-      - "8130:8130"
       - "18545:18545"
       - "18546:18546"
       - "18150:18150"

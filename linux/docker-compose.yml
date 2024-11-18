@@ -21,7 +21,7 @@ services:
       --rpcuser=test
       --rpcpass=test
       --miner
-      --miningaddr=${MINNING_ADDRESS}
+      --miningaddr=${MINING_ADDRESS}
       --generate
       --walletpass=test
       --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"

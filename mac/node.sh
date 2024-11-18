@@ -1,5 +1,5 @@
 #!/bin/bash
 
-minning_address=$1
-echo "mining address: $minning_address"
-MINNING_ADDRESS=$minning_address docker-compose up -d
+mining_address=$1
+echo "mining address: $mining_address"
+MINING_ADDRESS=$mining_address docker-compose up -d

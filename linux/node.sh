@@ -1,6 +1,6 @@
 #!/bin/bash
 
-minning_address=$1
+mining_address=$1
 # Get Docker Compose version
 docker_compose_version=$(docker compose version | awk '{print $4}')
 

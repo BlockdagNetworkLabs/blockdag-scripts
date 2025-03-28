@@ -3,9 +3,9 @@
 BINARY_NAME_WALLET="blockdag-wallet-mac"  
 DOWNLOAD_URL_WALLET="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/blockdag-wallet-mac"  
 DOWNLOAD_PATH_WALLET="bin/wallet"  
-BINARY_NAME="qx-mac"  
-DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/qx-mac"  
-DOWNLOAD_PATH="bin/qx"  
+BINARY_NAME="bdagex-mac"  
+DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/bdagex-mac"  
+DOWNLOAD_PATH="bin/bdagex"  
 
 
 # Check if the binary exists in the system

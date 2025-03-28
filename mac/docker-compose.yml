@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bdag:
-    image: blockdagnetwork/bdag:latest
+    image: blockdagnetwork/primordial:v1.0.0
     container_name: blockdag-testnet-network
     ports:
       - "38131:38131"
@@ -25,4 +25,4 @@ services:
       --walletpass=test
       --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
       --miningstatesync
-      --addpeer=/ip4/3.14.177.55/tcp/18150/p2p/16Uiu2HAkzfFmmeD6wzLcSEaoQcRyxfmgSRvb4pZ8cRBBfUWMQrup
+      --addpeer=/ip4/44.246.2.144/tcp/18150/p2p/16Uiu2HAkyoRzku3nYRHjuFBrqxWcYHex5uj4WjkaNHdGEYWqaJCw

@@ -161,7 +161,7 @@ This will stop the node, ensuring all current processes are terminated.
 ### Cleaning Up Node Data and Logs
 Once the node has been stopped, it's important to clean up any leftover data and logs to maintain optimal performance and disk space. To do this, run the following command:
 ```
-docker run blockdagnetwork/bdag:latest ./bdag --cleanup
+docker run blockdagnetwork/primordial:v1.0.0 ./bdag --cleanup
 ```
 This command will:
  - **Remove residual data**: Clears any unnecessary data stored by the node.

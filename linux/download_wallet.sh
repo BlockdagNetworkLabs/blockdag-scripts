@@ -3,9 +3,9 @@
 BINARY_NAME_WALLET="blockdag-wallet"  
 DOWNLOAD_URL_WALLET="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/blockdag-wallet"  
 DOWNLOAD_PATH_WALLET="bin/wallet"  
-BINARY_NAME="qx"  
-DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/qx"  
-DOWNLOAD_PATH="bin/qx"  
+BINARY_NAME="bdagex"  
+DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/bdagex"  
+DOWNLOAD_PATH="bin/bdagex"  
 
 
 # Check if the binary exists in the system

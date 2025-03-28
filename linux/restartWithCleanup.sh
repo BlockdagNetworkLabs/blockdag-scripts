@@ -2,7 +2,7 @@
 
 docker-compose down
 
-docker rmi blockdagnetwork/bdag
+docker rmi blockdagnetwork/primordial
 
 sudo rm -rf ./bin/bdag/*
 

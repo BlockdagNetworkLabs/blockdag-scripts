@@ -9,7 +9,7 @@ cd ./bin/wallet
 # Create the expect script
 expect << EOF
 set timeout -1
-spawn ./blockdag-wallet-mac qc create
+spawn ./blockdag-wallet-mac bdagc create
 match_max 100000
 
 # Enter the private passphrase for the new wallet

@@ -22,9 +22,9 @@ private_key=$(cat wallet.txt|grep -oP 'pri:\K[^\s]+')
 
 echo "private Key is : $private_key"
 
-cd ./bin/qx
+cd ./bin/bdagex
 echo "PK Address is : "
-pk_addr=$(./qx ec-to-public $private_key | ./qx ec-to-pkaddr -v=testnet)
+pk_addr=$(./bdagex ec-to-public $private_key | ./bdagex ec-to-pkaddr -v=testnet)
 cd ../..
 echo $pk_addr>>wallet.txt
 echo "$pk_addr"

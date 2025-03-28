@@ -2,7 +2,7 @@
 
 docker-compose down
 
-docker rmi blockdagnetwork/bdag
+docker rmi blockdagnetwork/primordial
 
 pk_addr=$(tail -n 1 "wallet.txt")
 

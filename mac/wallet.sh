@@ -25,11 +25,11 @@ private_key=$(cat wallet.txt | grep -o 'pri:[^ ]*' | sed 's/pri://' | tr -d '\r'
 # Debug: Check if the private key is correct
 echo "Private Key is: '$private_key'"
 
-# Navigate to the directory containing qx
-cd ./bin/qx
+# Navigate to the directory containing bdagex
+cd ./bin/bdagex
 
 # Use the private key to generate the public key address
-pk_addr=$(./qx-mac ec-to-public "$private_key" | ./qx-mac ec-to-pkaddr -v=testnet)
+pk_addr=$(./bdagex-mac ec-to-public "$private_key" | ./bdagex-mac ec-to-pkaddr -v=testnet)
 
 # Check for errors in the public key generation process
 if [ -z "$pk_addr" ]; then

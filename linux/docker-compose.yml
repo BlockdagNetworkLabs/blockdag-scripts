@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bdag:
-    image: blockdagnetwork/primordial:v1.0.0
+    image: blockdagnetwork/primordial:v1.0.1
     container_name: blockdag-testnet-network
     ports:
       - "38131:38131"

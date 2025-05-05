@@ -1,17 +1,22 @@
-version: '3'
+version: '3.8'
 
 services:
   bdag:
     image: blockdagnetwork/primordial:v1.0.1
     container_name: blockdag-testnet-network
+
     ports:
-      - "38131:38131"
-      - "18545:18545"
-      - "18546:18546"
-      - "18150:18150"
+      - "38131:38131"  # RPC port
+      - "18545:18545"  # HTTP JSON-RPC
+      - "18546:18546"  # WebSocket
+      - "18150:18150"  # P2P
+
     volumes:
       - ./bin/bdag/data:/bdag/data
       - ./bin/bdag/logs:/bdag/logs
+
+    restart: unless-stopped
+
     command: >
       ./bdag
       --testnet
@@ -23,6 +28,12 @@ services:
       --miningaddr=${MINING_ADDRESS}
       --generate
       --walletpass=test
-      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
+      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=*"
       --miningstatesync
       --addpeer=/ip4/44.246.2.144/tcp/18150/p2p/16Uiu2HAkyoRzku3nYRHjuFBrqxWcYHex5uj4WjkaNHdGEYWqaJCw
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

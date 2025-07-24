@@ -23,6 +23,6 @@ services:
       --miningaddr=${MINING_ADDRESS}
       --generate
       --walletpass=test
-      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
+      --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,eth,bdag --ws --ws.origins=* --ws.port=18546 --ws.addr=0.0.0.0 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*"
       --miningstatesync
       --addpeer=/ip4/44.246.2.144/tcp/18150/p2p/16Uiu2HAkyoRzku3nYRHjuFBrqxWcYHex5uj4WjkaNHdGEYWqaJCw

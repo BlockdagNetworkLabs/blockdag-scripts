@@ -5,6 +5,12 @@ This Makefile provides a simplified interface for managing BlockDAG nodes, worki
 ## Quick Start
 
 ```bash
+# Ensure make is installed
+apt install make
+
+# Ensure wallet and bdagex binaries are downloaded
+wget -O "bin/wallet/blockdag-wallet" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/blockdag-wallet" && wget -O "bin/bdagex/bdagex" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/bdagex"
+
 # Option 1: One command setup (if you don't have a wallet)
 make setup-and-run
 

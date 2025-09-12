@@ -1,10 +1,10 @@
 #!/bin/bash
 
 BINARY_NAME_WALLET="blockdag-wallet"  
-DOWNLOAD_URL_WALLET="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/blockdag-wallet"  
+DOWNLOAD_URL_WALLET="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/blockdag-wallet"  
 DOWNLOAD_PATH_WALLET="bin/wallet"  
 BINARY_NAME="bdagex"  
-DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/latest/download/bdagex"  
+DOWNLOAD_URL="https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/bdagex"  
 DOWNLOAD_PATH="bin/bdagex"  
 
 

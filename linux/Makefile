@@ -6,9 +6,9 @@ IMAGE_NAME=blockdagnetwork/primordial
 CURRENT_VERSION=v1.0.1
 LATEST_VERSION=latest
 LOCAL_TAG=dev
-CUSTOM_IMAGE_NAME=mattblockdag/blockdag-dev-node
+CUSTOM_IMAGE_NAME="YOUR_CUSTOM_IMAGE_NAME"
 
-.PHONY: help pull run stop logs clean build-custom push-custom check-versions wallet wallet-restore wallet-info setup-and-run
+.PHONY: help pull run stop logs clean clean-data build-custom push-custom check-versions wallet wallet-restore wallet-info setup-and-run restart-clean
 
 # Default target - show help
 help:
@@ -26,13 +26,15 @@ help:
 	@echo "  make wallet-restore SEED='your seed' - Restore wallet from seed"
 	@echo "  make wallet-info    - Show wallet information"
 	@echo "  make setup-and-run  - Create wallet and run node (one command)"
+	@echo "  make restart-clean  - Restart node with blockchain cleanup"
 	@echo ""
 	@echo "Custom Development:"
 	@echo "  make build-custom   - Build custom development image (requires Dockerfile)"
 	@echo "  make push-custom    - Push custom image to DockerHub"
 	@echo ""
 	@echo "Maintenance:"
-	@echo "  make clean          - Clean up local images"
+	@echo "  make clean          - Clean up local images and all data"
+	@echo "  make clean-data     - Clean up blockchain data only (keep images)"
 	@echo ""
 	@echo "Current official version: $(CURRENT_VERSION)"
 
@@ -40,8 +42,6 @@ help:
 pull:
 	@echo "Pulling official BlockDAG image: $(IMAGE_NAME):$(CURRENT_VERSION)"
 	docker pull $(IMAGE_NAME):$(CURRENT_VERSION)
-	@echo "Pulling latest version as well..."
-	docker pull $(IMAGE_NAME):latest || echo "Latest tag not available, using $(CURRENT_VERSION)"
 
 # Run the node using docker-compose
 run:
@@ -92,17 +92,49 @@ push-custom:
 		exit 1; \
 	fi
 
-# Clean up local images
+# Clean up local images and data
 clean:
-	@echo "Cleaning up local images..."
+	@echo "Stopping BlockDAG node..."
+	make stop
+	@echo "Cleaning up local images and data..."
 	docker rmi $(IMAGE_NAME):$(CURRENT_VERSION) || true
 	docker rmi $(IMAGE_NAME):latest || true
 	docker rmi $(CUSTOM_IMAGE_NAME):$(LOCAL_TAG) || true
+	@echo "Cleaning wallet data..."
+	./clean.sh
+	@echo "Cleaning blockchain data directories..."
+	rm -rf bin/bdag/data/* || true
+	rm -rf bin/bdag/logs/* || true
+	@echo "Cleaning blockchain data..."
+	@if docker images "$(IMAGE_NAME):$(CURRENT_VERSION)" | grep -q "$(IMAGE_NAME)"; then \
+		echo "Running blockchain cleanup..."; \
+		docker run --rm $(IMAGE_NAME):$(CURRENT_VERSION) ./bdag --cleanup || echo "Cleanup completed or no data to clean"; \
+	else \
+		echo "No local image found, skipping blockchain cleanup"; \
+	fi
 	@echo "Cleanup completed"
+
+# Clean up blockchain data only (keep Docker images)
+clean-data:
+	@echo "Cleaning up blockchain data..."
+	@echo "Cleaning blockchain data directories..."
+	rm -rf bin/bdag/data/* || true
+	rm -rf bin/bdag/logs/* || true
+	@if docker images "$(IMAGE_NAME):$(CURRENT_VERSION)" | grep -q "$(IMAGE_NAME)"; then \
+		echo "Running blockchain cleanup..."; \
+		docker run --rm $(IMAGE_NAME):$(CURRENT_VERSION) ./bdag --cleanup || echo "Cleanup completed or no data to clean"; \
+	else \
+		echo "No local image found, skipping blockchain cleanup"; \
+	fi
+	@echo "Blockchain data cleanup completed"
 
 # Wallet Management Commands
 wallet:
 	@echo "Creating a new wallet..."
+	@echo "Cleaning any existing wallet data..."
+	rm -rf /root/.dagwallet/ || true
+	rm -f wallet.txt || true
+	apt-get update && sudo apt-get install -y expect
 	./wallet.sh
 
 wallet-restore:
@@ -112,6 +144,9 @@ wallet-restore:
 		exit 1; \
 	fi
 	@echo "Restoring wallet from seed..."
+	@echo "Cleaning any existing wallet data..."
+	rm -rf /root/.dagwallet/ || true
+	rm -f wallet.txt || true
 	./wallet.sh "$(SEED)"
 
 wallet-info:
@@ -125,16 +160,18 @@ wallet-info:
 
 setup-and-run:
 	@echo "Setting up BlockDAG node (wallet + run)..."
-	@if [ ! -f "wallet.txt" ]; then \
-		echo "Creating new wallet..."; \
-		./wallet.sh; \
-	else \
-		echo "Wallet already exists, skipping creation..."; \
-	fi
+	make wallet
 	@echo "Pulling latest image..."
 	make pull
 	@echo "Starting node..."
 	make run
+
+# Restart with cleanup (useful when blockchain data is corrupted)
+restart-clean:
+	@echo "Restarting BlockDAG node with cleanup..."
+	make stop
+	make clean-data
+	make setup-and-run
 
 # Advanced: Update to a specific version
 update-version:

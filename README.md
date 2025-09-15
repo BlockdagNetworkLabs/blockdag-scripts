@@ -28,7 +28,7 @@
 1. **Docker Installation**: Docker should be installed on your system. If it is not installed, follow the steps in the [official Docker documentation](https://docs.docker.com/get-docker/) to install Docker.
 
 2. **Git**: Git is required for version control and managing repositories.
-   - For Debian/Ubuntu-based systems:
+ - For Debian/Ubuntu-based systems:
      ```bash
      sudo apt update
      sudo apt install git
@@ -40,12 +40,9 @@
 
 3. **Wget**: Used for downloading binaries.
    - For Debian/Ubuntu-based systems:
-     ```bash
-     sudo apt update
-     sudo apt install wget
-     
-     # Ensure make is installed
-     apt install make
+    ```bash
+    sudo apt update
+    sudo apt install wget
      ```
    - For macOS:
      ```bash
@@ -54,10 +51,14 @@
 
 4. **Make**: Make is required for running the make commands.
   - For Debian/Ubuntu-based systems:
-     ```bash
+    ```bash
      apt install make
-     ```
+    ```
 
+5. **Clone the repository**
+```bash
+  git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
+```
 ---
 
 
@@ -66,14 +67,9 @@
 ### Option 1: One Command Setup (Recommended)
 ```bash
 # Clone the repository
-git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
-
-# Ensure wallet and bdagex binaries are downloaded
-wget -O "bin/wallet/blockdag-wallet" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/blockdag-wallet" && wget -O "bin/bdagex/bdagex" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/bdagex"
-
 cd blockdag-scripts/linux
 
-# Run everything in one command
+# Run everything in one command (will prompt for ETH wallet)
 make setup-and-run
 ```
 
@@ -83,10 +79,7 @@ make setup-and-run
 git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
 cd blockdag-scripts/linux
 
-# Ensure wallet and bdagex binaries are downloaded
-wget -O "bin/wallet/blockdag-wallet" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/blockdag-wallet" && wget -O "bin/bdagex/bdagex" "https://github.com/BlockdagNetworkLabs/blockdag-scripts/releases/download/v1.0.1/bdagex"
-
-# Create a wallet
+# Configure ETH-compatible wallet (will prompt for your ETH address)
 make wallet
 
 # Pull the latest Docker image
@@ -98,9 +91,8 @@ make run
 # Check logs
 make logs
 
-# Stops the node
-make stop 
-                 
+# Stop the node
+make stop
 ```
 
 ---
@@ -115,8 +107,8 @@ make help                    # Show all available commands
 
 ### Wallet Management
 ```bash
-make wallet                  # Create a new wallet
-make wallet-restore SEED='your seed phrase'  # Restore wallet from seed
+make wallet                  # Configure ETH-compatible wallet (prompts for address)
+make wallet-restore         # Configure ETH-compatible wallet (restore)
 make wallet-info            # Show current wallet information
 ```
 
@@ -130,7 +122,7 @@ make logs                    # Show node logs (follow mode)
 
 ### Maintenance & Cleanup
 ### BEWARE THIS REMOVES YOUR WALLET FILES. ENSURE YOU HAVE BACKED UP YOUR WALLET GENERATION SEED
-make clean  
+#### make clean  
 ```bash
 make clean                   # Clean up local images and all data
 make clean-data              # Clean up blockchain data only (keep images)
@@ -157,16 +149,7 @@ If you see the error: `The dag data was damaged (Can't find tip:12302)`
 make restart-clean
 ```
 
-#### 2. Wallet Creation Issues
-If wallet creation fails with "expect: command not found":
-
-**Solution:**
-```bash
-sudo apt install expect
-make wallet
-```
-
-#### 3. Docker Permission Issues
+#### 2. Docker Permission Issues
 If you get Docker permission errors:
 
 **Solution:**
@@ -177,7 +160,7 @@ sudo usermod -aG docker $USER
 make setup-and-run
 ```
 
-#### 4. Node Won't Start
+#### 3. Node Won't Start
 If the node fails to start:
 
 **Solution:**

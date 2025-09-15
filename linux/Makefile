@@ -2,11 +2,14 @@
 # Works with existing blockdagnetwork/primordial image versioning
 
 # Variables
-IMAGE_NAME=blockdagnetwork/primordial
-CURRENT_VERSION=v1.0.1
+IMAGE_NAME=abhishek1857/blockdag
+CURRENT_VERSION=preawakening-v0.0.1
 LATEST_VERSION=latest
 LOCAL_TAG=dev
 CUSTOM_IMAGE_NAME="YOUR_CUSTOM_IMAGE_NAME"
+
+# Auto-detect mining address from wallet.txt
+MINING_ADDRESS := $(shell if [ -f wallet.txt ]; then cat wallet.txt; fi)
 
 .PHONY: help pull run stop logs clean clean-data build-custom push-custom check-versions wallet wallet-restore wallet-info setup-and-run restart-clean
 
@@ -22,10 +25,10 @@ help:
 	@echo "  make check-versions - Check available versions on DockerHub"
 	@echo ""
 	@echo "Wallet Management:"
-	@echo "  make wallet         - Create a new wallet"
-	@echo "  make wallet-restore SEED='your seed' - Restore wallet from seed"
+	@echo "  make wallet         - Configure ETH-compatible wallet"
+	@echo "  make wallet-restore - Configure ETH-compatible wallet (restore)"
 	@echo "  make wallet-info    - Show wallet information"
-	@echo "  make setup-and-run  - Create wallet and run node (one command)"
+	@echo "  make setup-and-run  - Complete setup with ETH wallet"
 	@echo "  make restart-clean  - Restart node with blockchain cleanup"
 	@echo ""
 	@echo "Custom Development:"
@@ -40,19 +43,26 @@ help:
 
 # Pull the latest official BlockDAG image
 pull:
-	@echo "Pulling official BlockDAG image: $(IMAGE_NAME):$(CURRENT_VERSION)"
+	@echo "📥 Pulling official BlockDAG image: $(IMAGE_NAME):$(CURRENT_VERSION)"
+	@echo "⏳ This may take a few minutes depending on your internet connection..."
 	docker pull $(IMAGE_NAME):$(CURRENT_VERSION)
+	@echo "📥 Pulling latest version as well..."
+	docker pull $(IMAGE_NAME):latest || echo "ℹ️  Latest tag not available, using $(CURRENT_VERSION)"
+	@echo "✅ Docker images pulled successfully"
 
 # Run the node using docker-compose
 run:
-	@echo "Starting BlockDAG node with docker-compose..."
+	@echo "🚀 Starting BlockDAG node with docker-compose..."
 	@if [ -f "wallet.txt" ]; then \
-		echo "Using existing wallet..."; \
-		MINING_ADDRESS=$$(tail -1 wallet.txt) docker-compose up -d; \
+		echo "✅ Using existing wallet..."; \
+		echo "🎯 Mining address set: $(MINING_ADDRESS)"; \
+		MINING_ADDRESS=$(MINING_ADDRESS) docker-compose up -d; \
 	else \
-		echo "No wallet found. Please create one first with: ./wallet.sh"; \
+		echo "❌ No wallet found. Please create one first with: make wallet"; \
 		exit 1; \
 	fi
+	@echo "⏳ Node is starting up... This may take a few moments."
+	@echo "📊 You can monitor progress with: make logs"
 
 # Stop the running node
 stop:
@@ -130,24 +140,40 @@ clean-data:
 
 # Wallet Management Commands
 wallet:
-	@echo "Creating a new wallet..."
-	@echo "Cleaning any existing wallet data..."
-	rm -rf /root/.dagwallet/ || true
-	rm -f wallet.txt || true
-	apt-get update && sudo apt-get install -y expect
-	./wallet.sh
+	@echo "=========================================="
+	@echo "BlockDAG Node Setup - ETH Wallet Integration"
+	@echo "=========================================="
+	@echo ""
+	@echo "Due to UTXO removal, BlockDAG now requires an ETH-compatible wallet."
+	@echo "Please provide your ETH wallet public key (address)."
+	@echo ""
+	@read -p "Enter your ETH wallet public key: " ETH_WALLET; \
+	if [ -z "$$ETH_WALLET" ]; then \
+		echo "Error: ETH wallet address is required!"; \
+		exit 1; \
+	fi; \
+	echo "$$ETH_WALLET" > wallet.txt; \
+	echo ""; \
+	echo "✅ ETH wallet address saved: $$ETH_WALLET"; \
+	echo "📁 Wallet info stored in: wallet.txt"
 
 wallet-restore:
-	@if [ -z "$(SEED)" ]; then \
-		echo "Usage: make wallet-restore SEED='your-wallet-seed-phrase'"; \
-		echo "Example: make wallet-restore SEED='word1 word2 word3...'"; \
+	@echo "=========================================="
+	@echo "BlockDAG Node Setup - ETH Wallet Integration"
+	@echo "=========================================="
+	@echo ""
+	@echo "Due to UTXO removal, BlockDAG now requires an ETH-compatible wallet."
+	@echo "Please provide your ETH wallet public key (address)."
+	@echo ""
+	@read -p "Enter your ETH wallet public key: " ETH_WALLET; \
+	if [ -z "$$ETH_WALLET" ]; then \
+		echo "Error: ETH wallet address is required!"; \
 		exit 1; \
-	fi
-	@echo "Restoring wallet from seed..."
-	@echo "Cleaning any existing wallet data..."
-	rm -rf /root/.dagwallet/ || true
-	rm -f wallet.txt || true
-	./wallet.sh "$(SEED)"
+	fi; \
+	echo "$$ETH_WALLET" > wallet.txt; \
+	echo ""; \
+	echo "✅ ETH wallet address saved: $$ETH_WALLET"; \
+	echo "📁 Wallet info stored in: wallet.txt"
 
 wallet-info:
 	@if [ -f "wallet.txt" ]; then \
@@ -159,12 +185,39 @@ wallet-info:
 	fi
 
 setup-and-run:
-	@echo "Setting up BlockDAG node (wallet + run)..."
-	make wallet
-	@echo "Pulling latest image..."
-	make pull
-	@echo "Starting node..."
-	make run
+	@echo "=========================================="
+	@echo "🚀 BlockDAG Node Setup - Starting..."
+	@echo "=========================================="
+	@echo ""
+	@echo "📋 Setup Progress:"
+	@echo "  [1/4] Checking ETH wallet configuration..."
+	@if [ ! -f "wallet.txt" ]; then \
+		echo "  [1/4] ⚠️  No ETH wallet found, prompting for ETH wallet..."; \
+		make wallet; \
+		echo "  [1/4] ✅ ETH wallet configured"; \
+	else \
+		echo "  [1/4] ✅ ETH wallet already exists"; \
+	fi
+	@echo "  [2/4] 📥 Pulling latest Docker image..."
+	@make pull
+	@echo "  [3/4] 🧹 Cleaning blockchain data..."
+	@make clean-data
+	@echo "  [4/4] 🚀 Starting BlockDAG node..."
+	@make run
+	@echo ""
+	@echo "=========================================="
+	@echo "✅ BlockDAG Node Setup Complete!"
+	@echo "=========================================="
+	@echo ""
+	@echo "📊 Node Status:"
+	@echo "  • Container: blockdag-testnet-network"
+	@echo "  • Network: BlockDAG Private Network (Devnet)"
+	@echo "  • Mining: Enabled with your ETH wallet"
+	@echo ""
+	@echo "🔧 Useful Commands:"
+	@echo "  make logs    - View real-time logs"
+	@echo "  make stop    - Stop the node"
+	@echo "  make wallet-info - View wallet information"
 
 # Restart with cleanup (useful when blockchain data is corrupted)
 restart-clean:

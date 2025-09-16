@@ -1,5 +1,5 @@
-# BlockDAG Node Makefile
-# Works with existing blockdagnetwork/primordial image versioning
+# BlockDAG Node Makefile - macOS Version
+# Works with existing abhishek1857/blockdag image versioning
 
 # Variables
 IMAGE_NAME=abhishek1857/blockdag
@@ -45,7 +45,7 @@ endef
 
 # Default target - show help
 help:
-	@echo "BlockDAG Node Makefile Commands:"
+	@echo "BlockDAG Node Makefile Commands (macOS):"
 	@echo ""
 	@echo "Usage: make [target] [DEBUG=1]"
 	@echo "  DEBUG=1 enables verbose logging for debugging"
@@ -122,8 +122,8 @@ stop:
 
 # Show real-time node status
 status:
-	@echo "📊 BlockDAG Node Status Dashboard"
-	@echo "=================================="
+	@echo "📊 BlockDAG Node Status Dashboard (macOS)"
+	@echo "=========================================="
 	@echo "🔄 Checking container status..."
 	@if docker ps | grep -q "blockdag-testnet-network"; then \
 		echo "✅ Container Status: RUNNING"; \
@@ -267,8 +267,8 @@ wallet-info:
 	fi
 
 setup-and-run:
-	@echo "🚀 BlockDAG Node Setup"
-	@echo "======================"
+	@echo "🚀 BlockDAG Node Setup (macOS)"
+	@echo "==============================="
 	@$(call show_overall_progress,0)
 	@$(call show_step,1,"Checking ETH wallet configuration")
 	@if [ "$(DEBUG)" = "1" ]; then echo "Checking ETH wallet configuration..."; fi
@@ -299,6 +299,7 @@ setup-and-run:
 	@echo "  • Container: blockdag-testnet-network"
 	@echo "  • Network: BlockDAG Private Network (Devnet)"
 	@echo "  • Mining: Enabled with your ETH wallet"
+	@echo "  • Platform: macOS"
 	@echo ""
 	@echo "🔧 Useful Commands:"
 	@echo "  make logs    - View real-time logs"

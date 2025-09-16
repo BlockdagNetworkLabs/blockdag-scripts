@@ -52,12 +52,12 @@
 4. **Make**: Make is required for running the make commands.
   - For Debian/Ubuntu-based systems:
     ```bash
-     apt install make
+     sudo apt install make
     ```
 
 5. **Clone the repository**
 ```bash
-  git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
+  sudo git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
 ```
 ---
 
@@ -66,11 +66,17 @@
 
 ### Option 1: One Command Setup (Recommended)
 ```bash
+
+# Ensure docker is installed 
+docker -v
+
 # Clone the repository
 cd blockdag-scripts/linux
 
 # Run everything in one command (will prompt for ETH wallet)
-make setup-and-run
+sudo make setup-and-run
+
+# Please see the Make Commands Reference for cleanup and maintenance commands
 ```
 
 ### Option 2: Step by Step
@@ -80,19 +86,18 @@ git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
 cd blockdag-scripts/linux
 
 # Configure ETH-compatible wallet (will prompt for your ETH address)
-make wallet
+sudo make wallet
 
 # Pull the latest Docker image
-make pull
+sudo make pull
 
 # Start the node
-make run
+sudo make run
 
 # Check logs
-make logs
+sudo make logs
 
-# Stop the node
-make stop
+# Please see the Make Commands Reference for cleanup and maintenance commands
 ```
 
 ---
@@ -102,37 +107,37 @@ make stop
 
 ### Getting Help
 ```bash
-make help                    # Show all available commands
+sudo make help                    # Show all available commands
 ```
 
 ### Wallet Management
 ```bash
-make wallet                  # Configure ETH-compatible wallet (prompts for address)
-make wallet-restore         # Configure ETH-compatible wallet (restore)
-make wallet-info            # Show current wallet information
+sudo make wallet                  # Configure ETH-compatible wallet (prompts for address)
+sudo make wallet-restore         # Configure ETH-compatible wallet (restore)
+sudo make wallet-info            # Show current wallet information
 ```
 
 ### Node Operations
 ```bash
-make pull                    # Pull latest official BlockDAG image
-make run                     # Run BlockDAG node with docker-compose
-make stop                    # Stop running BlockDAG node
-make logs                    # Show node logs (follow mode)
+sudo make pull                    # Pull latest official BlockDAG image
+sudo make run                     # Run BlockDAG node with docker-compose
+sudo make stop                    # Stop running BlockDAG node
+sudo make logs                    # Show node logs (follow mode)
 ```
 
 ### Maintenance & Cleanup
-### BEWARE THIS REMOVES YOUR WALLET FILES. ENSURE YOU HAVE BACKED UP YOUR WALLET GENERATION SEED
+### BEWARE THIS REMOVES YOUR WALLET FILES. ENSURE YOU HAVE BACKED UP YOUR WALLET PUBLIC KEY
 #### make clean  
 ```bash
-make clean                   # Clean up local images and all data
-make clean-data              # Clean up blockchain data only (keep images)
-make restart-clean           # Restart node with blockchain cleanup
+sudo make clean                   # Clean up local images and all data
+sudo make clean-data              # Clean up blockchain data only (keep images)
+sudo make restart-clean           # Restart node with blockchain cleanup
 ```
 
 ### Advanced Operations
 ```bash
-make check-versions          # Check available versions on DockerHub
-make update-version VERSION=v1.0.2  # Update to specific version
+sudo make check-versions          # Check available versions on DockerHub
+sudo make update-version VERSION=v1.0.2  # Update to specific version
 ```
 
 ---
@@ -146,7 +151,7 @@ If you see the error: `The dag data was damaged (Can't find tip:12302)`
 
 **Solution:**
 ```bash
-make restart-clean
+sudo make restart-clean
 ```
 
 #### 2. Docker Permission Issues
@@ -169,8 +174,8 @@ If the node fails to start:
 docker --version
 
 # Clean everything and start fresh
-make clean
-make setup-and-run
+sudo make clean
+sudo make setup-and-run
 ```
 
 ### Checking Node Status
@@ -180,20 +185,20 @@ make setup-and-run
 docker ps
 
 # View real-time logs
-make logs
+sudo make logs
 
 # Check wallet information
-make wallet-info
+sudo make wallet-info
 ```
 
 ### Stopping the Node
 
 ```bash
 # Stop the node gracefully
-make stop
+sudo make stop
 
 # Stop and clean up everything
-make clean
+sudo make clean
 ```
 
 ---

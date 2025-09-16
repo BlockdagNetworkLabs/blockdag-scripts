@@ -54,6 +54,10 @@
     ```bash
      sudo apt install make
     ```
+  - For macOS:
+    ```bash
+    brew install make
+    ```
 
 5. **Clone the repository**
 ```bash
@@ -64,20 +68,34 @@
 
 ## Quick Start
 
-### Option 1: One Command Setup (Recommended)
-```bash
+### Option 1: Simple (Recommended)
+# Setup
 
+If you are a linux distribution user then use the following command:
+```bash
 # Ensure docker is installed 
 docker -v
 
-# Clone the repository
 cd blockdag-scripts/linux
+```
+
+If you are a mac OS user then use the following command:
+```bash
+# Ensure docker is installed 
+docker -v
+
+cd blockdag-scripts/mac
+```
+
 
 # Run everything in one command (will prompt for ETH wallet)
+```bash
 sudo make setup-and-run
 
 # Please see the Make Commands Reference for cleanup and maintenance commands
 ```
+
+
 
 ### Option 2: Step by Step
 ```bash

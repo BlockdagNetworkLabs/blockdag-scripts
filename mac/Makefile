@@ -16,24 +16,24 @@ DEBUG ?= 0
 
 # Helper functions for progress display
 define show_progress
-	@echo "🔄 Progress: $1% $2"
+	@echo "Progress: $1% $2"
 endef
 
 define show_step
-	@echo "  ✓ Step $1/4: $2"
+	@echo "  Step $1/4: $2"
 endef
 
 define show_overall_progress
 	@echo ""
-	@echo "📊 Overall Progress:"
-	@echo "┌─────────────────────────────────────────────────────────┐"
-	@if [ $1 -ge 100 ]; then echo "│ ████████████████████████████████████████████████████████ │ 100%"; \
-	elif [ $1 -ge 75 ]; then echo "│ █████████████████████████████████████████████░░░░░░░░░░░ │ $1%"; \
-	elif [ $1 -ge 50 ]; then echo "│ ██████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ $1%"; \
-	elif [ $1 -ge 25 ]; then echo "│ ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ $1%"; \
-	else echo "│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │ $1%"; \
+	@echo "Overall Progress:"
+	@echo "========================================="
+	@if [ $1 -ge 100 ]; then echo "████████████████████████████████████████ 100%"; \
+	elif [ $1 -ge 75 ]; then echo "████████████████████████████████████░░░░ $1%"; \
+	elif [ $1 -ge 50 ]; then echo "████████████████████████████░░░░░░░░░░░░ $1%"; \
+	elif [ $1 -ge 25 ]; then echo "██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░ $1%"; \
+	else echo "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ $1%"; \
 	fi
-	@echo "└─────────────────────────────────────────────────────────┘"
+	@echo "========================================="
 	@echo ""
 endef
 
@@ -81,7 +81,7 @@ help:
 
 # Pull the latest official BlockDAG image
 pull:
-	@echo "📥 Pulling BlockDAG image..."
+	@echo "Pulling BlockDAG image..."
 	@$(call show_progress,10,"Starting download")
 	@if [ "$(DEBUG)" = "1" ]; then echo "Pulling official BlockDAG image: $(IMAGE_NAME):$(CURRENT_VERSION)"; fi
 	@if [ "$(DEBUG)" = "1" ]; then echo "This may take a few minutes depending on your internet connection..."; fi
@@ -90,11 +90,11 @@ pull:
 	@$(call show_progress,60,"Downloading latest version")
 	docker pull $(IMAGE_NAME):latest >/dev/null 2>&1 || true
 	@$(call show_progress,100,"Download complete")
-	@echo "✅ Docker images pulled successfully"
+	@echo "Docker images pulled successfully"
 
 # Run the node using docker-compose
 run:
-	@echo "🚀 Starting BlockDAG node..."
+	@echo "Starting BlockDAG node..."
 	@$(call show_progress,20,"Checking wallet")
 	@if [ -f "wallet.txt" ]; then \
 		if [ "$(DEBUG)" = "1" ]; then echo "Using existing ETH wallet..."; fi; \
@@ -103,47 +103,47 @@ run:
 		if [ "$(DEBUG)" = "1" ]; then echo "Starting Docker container..."; fi; \
 		MINING_ADDRESS=$(MINING_ADDRESS) docker-compose up -d >/dev/null 2>&1; \
 	else \
-		echo "❌ No wallet found. Please create one first with: make wallet"; \
+		echo "No wallet found. Please create one first with: make wallet"; \
 		exit 1; \
 	fi
 	@$(call show_progress,80,"Initializing node")
 	@if [ "$(DEBUG)" = "1" ]; then echo "Node is starting up... This may take a few moments."; fi
 	@$(call show_progress,100,"Node started")
 	@echo ""
-	@echo "✅ Node started successfully"
-	@echo "📊 Monitor with: make logs"
+	@echo "Node started successfully"
+	@echo "Monitor with: make logs"
 
 # Stop the running node
 stop:
-	@echo "⏹️  Stopping BlockDAG node..."
-	@echo "🔄 Gracefully shutting down container..."
+	@echo "Stopping BlockDAG node..."
+	@echo "Gracefully shutting down container..."
 	docker-compose down
-	@echo "✅ Node stopped successfully"
+	@echo "Node stopped successfully"
 
 # Show real-time node status
 status:
-	@echo "📊 BlockDAG Node Status Dashboard (macOS)"
-	@echo "=========================================="
-	@echo "🔄 Checking container status..."
+	@echo "BlockDAG Node Status Dashboard (macOS)"
+	@echo "======================================"
+	@echo "Checking container status..."
 	@if docker ps | grep -q "blockdag-testnet-network"; then \
-		echo "✅ Container Status: RUNNING"; \
-		echo "🔄 Checking node health..."; \
-		echo "📡 RPC Status: $$(curl -s http://localhost:38131/health 2>/dev/null || echo 'Not responding')"; \
-		echo "⛏️  Mining Status: $$(docker logs blockdag-testnet-network 2>&1 | tail -5 | grep -i mining || echo 'Checking...')"; \
+		echo "Container Status: RUNNING"; \
+		echo "Checking node health..."; \
+		echo "RPC Status: $$(curl -s http://localhost:38131/health 2>/dev/null || echo 'Not responding')"; \
+		echo "Mining Status: $$(docker logs blockdag-testnet-network 2>&1 | tail -5 | grep -i mining || echo 'Checking...')"; \
 	else \
-		echo "❌ Container Status: STOPPED"; \
+		echo "Container Status: STOPPED"; \
 	fi
-	@echo "📁 Wallet Status: $$(if [ -f wallet.txt ]; then echo "✅ Configured: $$(cat wallet.txt)"; else echo "❌ Not configured"; fi)"
-	@echo "🔧 Useful Commands:"
+	@echo "Wallet Status: $$(if [ -f wallet.txt ]; then echo "Configured: $$(cat wallet.txt)"; else echo "Not configured"; fi)"
+	@echo "Useful Commands:"
 	@echo "  make logs    - View real-time logs"
 	@echo "  make stop    - Stop the node"
 	@echo "  make run     - Start the node"
 
 # Show node logs
 logs:
-	@echo "📊 Showing BlockDAG node logs..."
-	@echo "🔄 Live monitoring active - Press Ctrl+C to exit"
-	@echo "📡 Connecting to container logs..."
+	@echo "Showing BlockDAG node logs..."
+	@echo "Live monitoring active - Press Ctrl+C to exit"
+	@echo "Connecting to container logs..."
 	docker logs -f blockdag-testnet-network
 
 # Check what versions are available on DockerHub
@@ -176,36 +176,36 @@ push-custom:
 
 # Clean up local images and data
 clean:
-	@echo "🧹 Starting comprehensive cleanup..."
-	@echo "🔄 Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%"
-	@echo "⏹️  Stopping BlockDAG node..."
+	@echo "Starting comprehensive cleanup..."
+	@echo "Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%"
+	@echo "Stopping BlockDAG node..."
 	make stop
-	@echo "🔄 Progress: [████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 20%"
-	@echo "🗑️  Cleaning up local images and data..."
+	@echo "Progress: [████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 20%"
+	@echo "Cleaning up local images and data..."
 	docker rmi $(IMAGE_NAME):$(CURRENT_VERSION) || true
 	docker rmi $(IMAGE_NAME):latest || true
 	docker rmi $(CUSTOM_IMAGE_NAME):$(LOCAL_TAG) || true
-	@echo "🔄 Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 40%"
-	@echo "💳 Cleaning wallet data..."
+	@echo "Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 40%"
+	@echo "Cleaning wallet data..."
 	./clean.sh
-	@echo "🔄 Progress: [████████████████████████░░░░░░░░░░░░░░░░] 60%"
-	@echo "📁 Cleaning blockchain data directories..."
+	@echo "Progress: [████████████████████████░░░░░░░░░░░░░░░░] 60%"
+	@echo "Cleaning blockchain data directories..."
 	rm -rf bin/bdag/data/* || true
 	rm -rf bin/bdag/logs/* || true
-	@echo "🔄 Progress: [████████████████████████████████░░░░░░░░] 80%"
-	@echo "🔧 Cleaning blockchain data..."
+	@echo "Progress: [████████████████████████████████░░░░░░░░] 80%"
+	@echo "Cleaning blockchain data..."
 	@if docker images "$(IMAGE_NAME):$(CURRENT_VERSION)" | grep -q "$(IMAGE_NAME)"; then \
 		echo "Running blockchain cleanup..."; \
 		docker run --rm $(IMAGE_NAME):$(CURRENT_VERSION) ./bdag --cleanup || echo "Cleanup completed or no data to clean"; \
 	else \
 		echo "No local image found, skipping blockchain cleanup"; \
 	fi
-	@echo "🔄 Progress: [████████████████████████████████████████] 100%"
-	@echo "✅ Cleanup completed"
+	@echo "Progress: [████████████████████████████████████████] 100%"
+	@echo "Cleanup completed"
 
 # Clean up blockchain data only (keep Docker images)
 clean-data:
-	@echo "🧹 Cleaning blockchain data..."
+	@echo "Cleaning blockchain data..."
 	@$(call show_progress,20,"Removing data directories")
 	@if [ "$(DEBUG)" = "1" ]; then echo "Cleaning blockchain data directories..."; fi
 	rm -rf bin/bdag/data/* >/dev/null 2>&1 || true
@@ -218,7 +218,7 @@ clean-data:
 		if [ "$(DEBUG)" = "1" ]; then echo "No local image found, skipping blockchain cleanup"; fi; \
 	fi
 	@$(call show_progress,100,"Cleanup complete")
-	@echo "✅ Blockchain data cleanup completed"
+	@echo "Blockchain data cleanup completed"
 
 # Wallet Management Commands
 wallet:
@@ -236,8 +236,8 @@ wallet:
 	fi; \
 	echo "$$ETH_WALLET" > wallet.txt; \
 	echo ""; \
-	echo "✅ ETH wallet address saved: $$ETH_WALLET"; \
-	echo "📁 Wallet info stored in: wallet.txt"
+	echo "ETH wallet address saved: $$ETH_WALLET"; \
+	echo "Wallet info stored in: wallet.txt"
 
 wallet-restore:
 	@echo "=========================================="
@@ -254,8 +254,8 @@ wallet-restore:
 	fi; \
 	echo "$$ETH_WALLET" > wallet.txt; \
 	echo ""; \
-	echo "✅ ETH wallet address saved: $$ETH_WALLET"; \
-	echo "📁 Wallet info stored in: wallet.txt"
+	echo "ETH wallet address saved: $$ETH_WALLET"; \
+	echo "Wallet info stored in: wallet.txt"
 
 wallet-info:
 	@if [ -f "wallet.txt" ]; then \
@@ -267,8 +267,8 @@ wallet-info:
 	fi
 
 setup-and-run:
-	@echo "🚀 BlockDAG Node Setup (macOS)"
-	@echo "==============================="
+	@echo "BlockDAG Node Setup (macOS)"
+	@echo "============================"
 	@$(call show_overall_progress,0)
 	@$(call show_step,1,"Checking ETH wallet configuration")
 	@if [ "$(DEBUG)" = "1" ]; then echo "Checking ETH wallet configuration..."; fi
@@ -293,15 +293,15 @@ setup-and-run:
 	@make run
 	@$(call show_overall_progress,100)
 	@echo ""
-	@echo "✅ BlockDAG Node Setup Complete!"
+	@echo "BlockDAG Node Setup Complete!"
 	@echo ""
-	@echo "📊 Node Status:"
-	@echo "  • Container: blockdag-testnet-network"
-	@echo "  • Network: BlockDAG Private Network (Devnet)"
-	@echo "  • Mining: Enabled with your ETH wallet"
-	@echo "  • Platform: macOS"
+	@echo "Node Status:"
+	@echo "  Container: blockdag-testnet-network"
+	@echo "  Network: BlockDAG Private Network (Devnet)"
+	@echo "  Mining: Enabled with your ETH wallet"
+	@echo "  Platform: macOS"
 	@echo ""
-	@echo "🔧 Useful Commands:"
+	@echo "Useful Commands:"
 	@echo "  make logs    - View real-time logs"
 	@echo "  make stop    - Stop the node"
 	@echo "  make status  - Show node status"

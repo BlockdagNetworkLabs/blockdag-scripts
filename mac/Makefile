@@ -27,11 +27,11 @@ define show_overall_progress
 	@echo ""
 	@echo "Overall Progress:"
 	@echo "========================================="
-	@if [ $1 -ge 100 ]; then echo "████████████████████████████████████████ 100%"; \
-	elif [ $1 -ge 75 ]; then echo "████████████████████████████████████░░░░ $1%"; \
-	elif [ $1 -ge 50 ]; then echo "████████████████████████████░░░░░░░░░░░░ $1%"; \
-	elif [ $1 -ge 25 ]; then echo "██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░ $1%"; \
-	else echo "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ $1%"; \
+	@if [ $1 -ge 100 ]; then echo "######################################## 100%"; \
+	elif [ $1 -ge 75 ]; then echo "#################################....... $1%"; \
+	elif [ $1 -ge 50 ]; then echo "####################................... $1%"; \
+	elif [ $1 -ge 25 ]; then echo "##########............................. $1%"; \
+	else echo "........................................ $1%"; \
 	fi
 	@echo "========================================="
 	@echo ""
@@ -99,7 +99,7 @@ run:
 	@if [ -f "wallet.txt" ]; then \
 		if [ "$(DEBUG)" = "1" ]; then echo "Using existing ETH wallet..."; fi; \
 		if [ "$(DEBUG)" = "1" ]; then echo "Mining address set: $(MINING_ADDRESS)"; fi; \
-		$(call show_progress,50,"Starting container"); \
+		echo "Progress: 50% Starting container"; \
 		if [ "$(DEBUG)" = "1" ]; then echo "Starting Docker container..."; fi; \
 		MINING_ADDRESS=$(MINING_ADDRESS) docker-compose up -d >/dev/null 2>&1; \
 	else \
@@ -177,22 +177,22 @@ push-custom:
 # Clean up local images and data
 clean:
 	@echo "Starting comprehensive cleanup..."
-	@echo "Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%"
+	@echo "Progress: [................................] 0%"
 	@echo "Stopping BlockDAG node..."
 	make stop
-	@echo "Progress: [████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 20%"
+	@echo "Progress: [########........................] 20%"
 	@echo "Cleaning up local images and data..."
 	docker rmi $(IMAGE_NAME):$(CURRENT_VERSION) || true
 	docker rmi $(IMAGE_NAME):latest || true
 	docker rmi $(CUSTOM_IMAGE_NAME):$(LOCAL_TAG) || true
-	@echo "Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 40%"
+	@echo "Progress: [################................] 40%"
 	@echo "Cleaning wallet data..."
 	./clean.sh
-	@echo "Progress: [████████████████████████░░░░░░░░░░░░░░░░] 60%"
+	@echo "Progress: [########################........] 60%"
 	@echo "Cleaning blockchain data directories..."
 	rm -rf bin/bdag/data/* || true
 	rm -rf bin/bdag/logs/* || true
-	@echo "Progress: [████████████████████████████████░░░░░░░░] 80%"
+	@echo "Progress: [############################....] 80%"
 	@echo "Cleaning blockchain data..."
 	@if docker images "$(IMAGE_NAME):$(CURRENT_VERSION)" | grep -q "$(IMAGE_NAME)"; then \
 		echo "Running blockchain cleanup..."; \
@@ -200,7 +200,7 @@ clean:
 	else \
 		echo "No local image found, skipping blockchain cleanup"; \
 	fi
-	@echo "Progress: [████████████████████████████████████████] 100%"
+	@echo "Progress: [################################] 100%"
 	@echo "Cleanup completed"
 
 # Clean up blockchain data only (keep Docker images)

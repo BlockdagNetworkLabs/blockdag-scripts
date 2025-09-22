@@ -61,7 +61,7 @@
 
 5. **Clone the repository**
 ```bash
-  sudo git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
+  sudo git clone https://github.com/BlockdagEngineering/blockdag-scripts
 ```
 ---
 
@@ -69,7 +69,7 @@
 ## Quick Start
 
 ### Option 1: Simple (Recommended)
-# Setup
+#### Setup
 
 If you are a linux distribution user then use the following command:
 ```bash
@@ -88,7 +88,7 @@ cd blockdag-scripts/mac
 ```
 
 
-# Run everything in one command (will prompt for ETH wallet)
+#### Run everything in one command (will prompt for ETH wallet)
 ```bash
 sudo make setup-and-run
 

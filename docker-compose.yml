@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  nodeworker:
+    image: blockdagnetwork/awakening:v0.0.1
+    container_name: blockdag-testnet-network
+    restart: unless-stopped
+    ports:
+      - "38131:38131"
+      - "18545:18545"
+      - "18546:18546"
+      - "18150:18150"
+    volumes:
+      - bdag_bin:/opt/bdag
+      - ./bin/bdag/data:/bdag/data
+      - ./bin/bdag/logs:/bdag/logs
+    environment:
+      NODE_ARGS: '--testnet --rpclisten=0.0.0.0:38131 --notls --rpcuser=test --rpcpass=test --generate --miner --miningaddr=${MINING_ADDRESS} --walletpass=test --evmenv="--http --http.port=18545 --http.addr=0.0.0.0 --http.api=net,web3,debug,eth,bdag,erigon --ws --ws.origins=* --ws.addr=0.0.0.0 --ws.port=18546 --http.corsdomain=* --http.vhosts=* --http.corsdomain=*" --miningstatesync --rpcmaxclients=500 --addpeer=/ip4/13.245.135.249/tcp/18150/p2p/16Uiu2HAm3hjo65MZvBEJuVASMoSDsXfMzC8m2ZEAeK8CjjJkRvf9'
+      RPC_URL: ws://127.0.0.1:18546
+      CONTRACT_ADDRESS: 0x96C22c86B91235165eBF1F0f41FbeadA9C323A7A
+      ROLLOUT_WINDOW: 30m
+      CONTRACT_DEPLOY_BLOCK: 257509
+      HEALTH_MIN_PEERS: 1
+
+volumes:
+  bdag_bin: {}

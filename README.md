@@ -1,255 +1,184 @@
 # BlockDAG Node Setup Documentation
 
+Automation helpers for running and maintaining a BlockDAG testnet node with Docker. The scripts wrap the provided `docker-compose.yml` so you can bring a node up with a single command, manage restarts, and safely wipe local state when needed.
+
 ## Table of Contents
-1. [Hardware Requirements](#hardware-requirements)
-2. [Prerequisites](#prerequisites)
-3. [Quick Start](#quick-start)
-4. [Make Commands Reference](#make-commands-reference)
-5. [Troubleshooting](#troubleshooting)
+- [Features](#features)
+- [Repository Layout](#repository-layout)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Running the Node](#running-the-node)
+- [Maintenance Tasks](#maintenance-tasks)
+- [Troubleshooting](#troubleshooting)
+- [Data & Security Notes](#data--security-notes)
+- [Reference: Docker Compose Service](#reference-docker-compose-service)
+- [Support](#support)
 
 ---
 
-## Hardware Requirements
-
-- **CPU**: Minimum 4 cores (4+ cores recommended for mining)
-- **Memory (RAM)**: At least 8GB (8GB+ recommended)
-- **Disk Space**: Minimum 20GB of free disk space. More storage is recommended depending on the size of the blockchain and logs
-- **Network**: A stable internet connection with sufficient bandwidth
-
----
-## Prerequisites
-
-### Supported Operating Systems
-- **Ubuntu**: 18.04 LTS or later
-- **macOS**: 13 (Ventura) or later
-
-### Required Software
-
-1. **Docker Installation**: Docker should be installed on your system. If it is not installed, follow the steps in the [official Docker documentation](https://docs.docker.com/get-docker/) to install Docker.
-
-2. **Git**: Git is required for version control and managing repositories.
- - For Debian/Ubuntu-based systems:
-     ```bash
-     sudo apt update
-     sudo apt install git
-     ```
-   - For macOS, install Git using Homebrew:
-     ```bash
-     brew install git
-     ```
-
-3. **Wget**: Used for downloading binaries.
-   - For Debian/Ubuntu-based systems:
-    ```bash
-    sudo apt update
-    sudo apt install wget
-     ```
-   - For macOS:
-     ```bash
-     brew install wget
-     ```
-
-4. **Make**: Make is required for running the make commands.
-  - For Debian/Ubuntu-based systems:
-    ```bash
-     sudo apt install make
-    ```
-  - For macOS:
-    ```bash
-    brew install make
-    ```
-
-5. **Clone the repository**
-```bash
-  sudo git clone https://github.com/BlockdagEngineering/blockdag-scripts
-```
----
-
-
-## Quick Start
-
-### Option 1: Simple (Recommended)
-#### Setup
-
-If you are a linux distribution user then use the following command:
-```bash
-# Ensure docker is installed 
-docker -v
-
-cd blockdag-scripts/linux
-```
-
-If you are a mac OS user then use the following command:
-```bash
-# Ensure docker is installed 
-docker -v
-
-cd blockdag-scripts/mac
-```
-
-
-#### Run everything in one command (will prompt for ETH wallet)
-```bash
-sudo make setup-and-run
-
-# Please see the Make Commands Reference for cleanup and maintenance commands
-```
-
-
-
-### Option 2: Step by Step
-```bash
-# Clone the repository
-git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts
-cd blockdag-scripts/linux
-
-# Configure ETH-compatible wallet (will prompt for your ETH address)
-sudo make wallet
-
-# Pull the latest Docker image
-sudo make pull
-
-# Start the node
-sudo make run
-
-# Check logs
-sudo make logs
-
-# Please see the Make Commands Reference for cleanup and maintenance commands
-```
+## Features
+- Single-entrypoint script (`blockdag.sh`) that loads your mining address and launches Docker Compose.
+- Cross-platform Docker Compose detection (`node.sh`) compatible with Compose v1 and v2 syntaxes.
+- Opinionated directory structure for persisted blockchain data, logs, and binaries under `bin/bdag/`.
+- Sample environment file (`.env`) for storing wallet configuration.
+- Optional Linux helper to install Docker & Docker Compose (`install_docker.sh`).
 
 ---
 
-
-## Make Commands Reference
-
-### Getting Help
-```bash
-sudo make help                    # Show all available commands
+## Repository Layout
+```
+blockdag.sh             # Primary launcher – loads wallet and calls node.sh
+node.sh                 # Starts docker compose with the provided mining address
+restart.sh              # Stops current stack, removes image, restarts with existing data
+restartWithCleanup.sh   # Same as above, but wipes ./bin/bdag before restart
+install_docker.sh       # Ubuntu-based helper to install Docker & docker-compose
+docker-compose.yml      # Defines the BlockDAG worker service and persisted volumes
+bin/bdag/data           # Blockchain data volume (created at runtime)
+bin/bdag/logs           # Node log output (created at runtime)
+.env                    # Optional environment file (example provided)
+wallet.txt              # Optional file containing wallet info, last line read as mining address
 ```
 
-### Wallet Management
+> **Note:** `bin/bdag/data` and `bin/bdag/logs` may be empty until the node runs. If they contain testnet data generated by previous runs, they might require elevated permissions to inspect or delete.
+
+---
+
+## Requirements
+
+### Operating Systems
+- **Linux (Ubuntu/Debian, Fedora, Arch, etc.)**: fully supported. Scripts assume a POSIX shell and Docker.
+- **macOS (Ventura 13+ recommended)**: supported as long as Docker Desktop is installed.
+- **Windows**: run inside [WSL2](https://learn.microsoft.com/windows/wsl/install) or another Linux-like environment. Native PowerShell is not supported by these scripts.
+
+### Software
+- Docker Engine & Docker Compose v1 or v2.
+- Git (to clone the repository).
+- `bash` (all scripts use Bash features).
+
+Optional for Linux users:
+- `curl`, `apt`, etc. – `install_docker.sh` targets Ubuntu 20.04+ and requires root.
+
+### Hardware Guidelines
+- **CPU**: Minimum 4 cores (4+ cores recommended for mining).
+- **Memory (RAM)**: At least 8GB (8GB+ recommended).
+- **Disk Space**: Minimum 20GB of free disk space. More storage is recommended depending on the size of the blockchain and logs.
+- **Network**: A stable internet connection with sufficient bandwidth.
+
+### Wallet Format Notice
+- BlockDAG nodes now use **EVM-compatible public addresses (0x…)** for mining rewards.
+- Legacy **UTXO-based PK addresses are no longer supported**. Update any automation, scripts, or stored credentials to point to an EVM wallet before starting the node.
+
+---
+
+## Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/BlockdagNetworkLabs/blockdag-scripts.git
+   cd blockdag-scripts
+   ```
+
+2. **Configure your mining address**
+   - Option A: edit `.env` and set `PUB_ETH_ADDR=<your_evm_wallet_address>`.
+   - Option B: create `wallet.txt` where the last line contains your wallet address (e.g. exported from another tool).
+
+   If both exist, `.env` takes precedence.
+
+   > **Network note:** These scripts target the latest EVM-based BlockDAG network only. Do not reuse legacy UTXO addresses; configure a 0x-prefixed EVM wallet for mining rewards.
+
+3. **Verify Docker access**
+   ```bash
+   docker --version
+   docker compose version  # or docker-compose --version
+   ```
+   If Docker is not installed on Ubuntu, you can adapt the provided `install_docker.sh` script (requires `sudo`).
+
+4. **Allow Docker to create local directories**
+   Ensure your user has permissions to write to `bin/bdag/`. The directory is created automatically, but on Linux you may need to `chown` it if Docker runs as root.
+
+---
+
+## Address Format Update (EVM Only)
+
+- BlockDAG mining rewards are now paid to Ethereum-style accounts. Supply an `0x`-prefixed EVM public address wherever the scripts expect `PUB_ETH_ADDR`.
+- If you are migrating from earlier releases that referenced UTXO/PK addresses, regenerate or import an EVM wallet and update `.env` or `wallet.txt` accordingly.
+- Remove any legacy environment variables or files that still contain the deprecated address format to avoid accidental misconfiguration.
+
+---
+
+## Running the Node
+
+1. Launch the node (prompts will depend on your shell configuration):
+   ```bash
+   ./blockdag.sh
+   ```
+   The script resolves your address, exports it as `PUB_ETH_ADDR`, and calls `node.sh`.
+
+2. `node.sh` selects the correct Docker Compose syntax for your installation and starts the stack with `MINING_ADDRESS` set from your EVM wallet.
+
+3. Once the containers are up:
+   ```bash
+   docker ps            # Verify the blockdag-testnet-network container is running
+   tail -f bin/bdag/logs/node.log  # Replace with actual filename after first run
+   ```
+
+To stop the node without cleaning data:
 ```bash
-sudo make wallet                  # Configure ETH-compatible wallet (prompts for address)
-sudo make wallet-restore         # Configure ETH-compatible wallet (restore)
-sudo make wallet-info            # Show current wallet information
+docker compose down    # or docker-compose down
 ```
 
-### Node Operations
-```bash
-sudo make pull                    # Pull latest official BlockDAG image
-sudo make run                     # Run BlockDAG node with docker-compose
-sudo make stop                    # Stop running BlockDAG node
-sudo make logs                    # Show node logs (follow mode)
-```
+---
 
-### Maintenance & Cleanup
-### BEWARE THIS REMOVES YOUR WALLET FILES. ENSURE YOU HAVE BACKED UP YOUR WALLET PUBLIC KEY
-#### make clean  
-```bash
-sudo make clean                   # Clean up local images and all data
-sudo make clean-data              # Clean up blockchain data only (keep images)
-sudo make restart-clean           # Restart node with blockchain cleanup
-```
+## Maintenance Tasks
 
-### Advanced Operations
+Use the helper scripts at the repository root:
+
+- `restart.sh` – shuts down Docker Compose, removes the `blockdagnetwork/awakening` image if present, and relaunches using your configured wallet.
+- `restartWithCleanup.sh` – same as above but also clears `./bin/bdag/*` (data, logs, any cached binaries). **Back up your wallet before running this.**
+- `install_docker.sh` – Ubuntu/WSL convenience installer. Review the script before executing (`sudo ./install_docker.sh`).
+
+Manual alternatives:
 ```bash
-sudo make check-versions          # Check available versions on DockerHub
-sudo make update-version VERSION=v1.0.2  # Update to specific version
+# Pull the latest image
+MINING_ADDRESS=$PUB_ETH_ADDR docker compose pull
+
+# View logs
+docker compose logs -f
+
+# Remove volumes and containers
+docker compose down --volumes
 ```
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
-
-#### 1. Blockchain Corruption Error
-If you see the error: `The dag data was damaged (Can't find tip:12302)`
-
-**Solution:**
-```bash
-sudo make restart-clean
-```
-
-#### 2. Docker Permission Issues
-If you get Docker permission errors:
-
-**Solution:**
-```bash
-# Add your user to docker group
-sudo usermod -aG docker $USER
-# Log out and log back in, then try again
-make setup-and-run
-```
-
-#### 3. Node Won't Start
-If the node fails to start:
-
-**Solution:**
-```bash
-# Check if Docker is running
-docker --version
-
-# Clean everything and start fresh
-sudo make clean
-sudo make setup-and-run
-```
-
-### Checking Node Status
-
-```bash
-# Check if the node is running
-docker ps
-
-# View real-time logs
-sudo make logs
-
-# Check wallet information
-sudo make wallet-info
-```
-
-### Stopping the Node
-
-```bash
-# Stop the node gracefully
-sudo make stop
-
-# Stop and clean up everything
-sudo make clean
-```
+- **"PUB_ETH_ADDR not set"**: Confirm `.env` or `wallet.txt` exists and the address is on the last line. Reload your shell if you edited `.env` while a session was running.
+- **Docker permission denied**: Add your user to the `docker` group (`sudo usermod -aG docker $USER`) and restart your session, or run the scripts with `sudo`.
+- **Node restarts on launch**: Inspect `bin/bdag/logs` for recent log files. If corruption errors appear, run `./restartWithCleanup.sh` to wipe local state.
+- **Port conflicts**: Default ports 38131, 18545, 18546, and 18150 must be free. Stop other services using them or edit `docker-compose.yml`.
+- **Windows path issues**: Ensure the repository lives inside your WSL filesystem (e.g. `/home/<user>`), not the mounted `C:` drive, to avoid Docker volume permission problems.
 
 ---
 
-## Important Notes
-
-### Security
-- **Wallet Seed**: Store your wallet seed phrase securely. If lost, you cannot recover your wallet or funds.
-- **Private Key**: Keep your private key safe and never share it.
-- **wallet.txt**: This file contains sensitive information. Keep it secure.
-
-### Mining
-- Your node will automatically start mining with the created wallet address
-- Mining rewards will be sent to your wallet address
-- The node runs on the BlockDAG testnet (Chain ID: 1043)
-
-### Data Storage
-- Blockchain data is stored in `bin/bdag/data/`
-- Logs are stored in `bin/bdag/logs/`
-- Wallet information is stored in `wallet.txt`
-
-### Network Information
-- **Testnet**: BlockDAG Testnet (Chain ID: 1043)
-- **Consensus**: BDAG (Proof-of-Work)
-- **RPC Port**: 38131
-- **HTTP Port**: 18545
-- **WebSocket Port**: 18546
+## Data & Security Notes
+- The wallet address (`PUB_ETH_ADDR`) is injected into the container as `MINING_ADDRESS`. It must be an EVM address; do not reuse retired UTXO-style identifiers.
+- Do not commit `.env` or `wallet.txt` with real keys.
+- Blockchain data persists in `bin/bdag/data/`. Back it up before destructive operations.
+- Logs populate `bin/bdag/logs/` and may contain sensitive operational details; sanitize before sharing.
+- Consider rotating Docker logs or mounting external storage if running long-term.
 
 ---
 
-## Support
+## Reference: Docker Compose Service
 
-For additional help and support:
-- Check the [BlockDAG Network Documentation](https://docs.blockdag.network/)
-- Visit the [BlockDAG Community](https://community.blockdag.network/)
-- Report issues on [GitHub](https://github.com/BlockdagNetworkLabs/blockdag-scripts/issues)
+`docker-compose.yml` launches a single service named `nodeworker` based on `abhishek1857/blockdag:worker-20250923-102625`. Key settings:
+
+- **Ports**: `38131` (RPC), `18545` (HTTP), `18546` (WebSocket), `18150` (peer).
+- **Volumes**:
+  - `bdag_bin` named volume mounted at `/opt/bdag` inside the container.
+  - Local `./bin/bdag/data` → `/bdag/data` for chain data.
+  - Local `./bin/bdag/logs` → `/bdag/logs` for logs.
+- **Environment**: `NODE_ARGS` assembles testnet flags, mining options, CORS/websocket settings, and seeds a peer.
+
+Customize the image tag or arguments directly in `docker-compose.yml` if the network releases new versions.

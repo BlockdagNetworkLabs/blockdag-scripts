@@ -108,11 +108,14 @@ Optional for Linux users:
 
 ## Running the Node
 
-1. Launch the node (prompts will depend on your shell configuration):
+1. Launch the node (prompts will depend on your shell configuration): Choose a role or omit it to default to the miner archive template:
    ```bash
-   ./blockdag.sh
+   ./blockdag.sh               # default miner node
+   ./blockdag.sh full          # validation without mining
+   ./blockdag.sh relay         # gateway relay mode
    ```
-   The script resolves your address, exports it as `PUB_ETH_ADDR`, and calls `node.sh`.
+   The script resolves your address, exports it as `PUB_ETH_ADDR`, selects the matching compose file, and calls node.sh`. Set `NODE_ROLE=<role>` in your
+   environment if you prefer not to pass a CLI argument.
 
 2. `node.sh` selects the correct Docker Compose syntax for your installation and starts the stack with `MINING_ADDRESS` set from your EVM wallet.
 
@@ -129,12 +132,54 @@ docker compose down    # or docker-compose down
 
 ---
 
+## Node Types & Compose Configurations
+
+This repository now ships dedicated Docker Compose files for each supported node role. All templates default to **EVM archive mode** so historical chain state is preserved out of the box. If you prefer a pruned node, remove `--gcmode=archive` from the corresponding `NODE_ARGS` before launching.
+
+| Node type | Compose file | Highlights |
+|-----------|--------------|------------|
+| Miner | `docker-compose.yml` | Enables mining via `--miner`/`--generate` and exposes JSON-RPC/WebSocket endpoints for local tooling. |
+| Full | `docker-compose.full.yml` | Syncs and validates the network without mining. |
+| Relay | `docker-compose.relay.yml` | Runs the gateway stack (`--gateway`) to proxy DAG/EVM traffic for external clients. |
+
+> **Tip:** Any of the non-archive templates can double as an archive node just
+> by keeping the default `--gcmode=archive`. Removing that flag reverts to the
+> previous pruned behaviour.
+
+To start a specific role with the helper script, run `./blockdag.sh <role>`. For
+example, `./blockdag.sh relay` loads `docker-compose.relay.yml` while
+`./blockdag.sh full` launches the `docker-compose.full.yml`. Use
+`./blockdag.sh` to fall back to the default `docker-compose.yml` miner node.
+
+### Launching a specific node type
+
+1. Copy the compose file that matches your desired role or reference it
+   directly when starting Docker Compose. For example, to run a miner node in
+   archive mode:
+
+   ```bash
+   MINING_ADDRESS=$PUB_ETH_ADDR docker compose -f docker-compose.miner.yml up -d
+   ```
+
+2. Follow the same pattern for the other node types by substituting the compose
+   file.
+
+3. When archive storage is not required, edit the chosen compose file and
+   remove `--gcmode=archive` from the embedded `--evmenv` string before
+   launching.
+
+Refer to the [Additional Note](#additional-note-applies-to-all-node-types) below
+for more context on the archive flag and recommended hardware for long-term
+archive deployments.
+
+---
+
 ## Maintenance Tasks
 
 Use the helper scripts at the repository root:
 
-- `restart.sh` – shuts down Docker Compose, removes the `blockdagnetwork/awakening` image if present, and relaunches using your configured wallet.
-- `restartWithCleanup.sh` – same as above but also clears `./bin/bdag/*` (data, logs, any cached binaries). **Back up your wallet before running this.**
+- `restart.sh [role]` – shuts down Docker Compose for the selected role (defaults to `miner`), removes the image referenced by the compose file, and relaunches using your configured wallet.
+- `restartWithCleanup.sh [role]` – same as above but also clears `./bin/bdag/*` (data, logs, any cached binaries). **Back up your wallet before running this.**
 - `install_docker.sh` – Ubuntu/WSL convenience installer. Review the script before executing (`sudo ./install_docker.sh`).
 
 Manual alternatives:
@@ -172,7 +217,7 @@ docker compose down --volumes
 
 ## Reference: Docker Compose Service
 
-`docker-compose.yml` launches a single service named `nodeworker` based on `abhishek1857/blockdag:worker-20250923-102625`. Key settings:
+`docker-compose.yml` launches a single service named `nodeworker` based on `blockdagnetwork/awakening:v0.0.2`. Key settings:
 
 - **Ports**: `38131` (RPC), `18545` (HTTP), `18546` (WebSocket), `18150` (peer).
 - **Volumes**:

@@ -1,14 +1,37 @@
-#!/bin/bash
+ #!/bin/bash
+ 
+set -euo pipefail
+
+if [ $# -lt 2 ]; then
+  echo "Usage: ./node.sh <MINING_ADDRESS> <COMPOSE_FILE>" >&2
+  exit 1
+fi
 
 mining_address=$1
-# Get Docker Compose version
-docker_compose_version=$(docker compose version | awk '{print $4}')
+compose_file=$2
 
-# Check the major version of Docker Compose
-if [[ "$docker_compose_version" =~ ^v2 ]]; then
-    echo "Detected Docker Compose v2. Using the updated command syntax."
-    MINING_ADDRESS=$mining_address docker compose up -d
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$compose_file" = /* ]]; then
+  compose_path="$compose_file"
 else
-    echo "Detected Docker Compose v1. Using the legacy command syntax."
-    MINING_ADDRESS=$mining_address docker-compose up -d
+  compose_path="$SCRIPT_DIR/$compose_file"
+fi
+
+if [ ! -f "$compose_path" ]; then
+  echo "Compose file not found: $compose_path" >&2
+  exit 1
+fi
+
+export MINING_ADDRESS="$mining_address"
+
+if docker compose version >/dev/null 2>&1; then
+  echo "Using docker compose with file $compose_path"
+  docker compose -f "$compose_path" up -d
+elif docker-compose version >/dev/null 2>&1; then
+  echo "Using docker-compose with file $compose_path"
+  docker-compose -f "$compose_path" up -d
+else
+  echo "Neither 'docker compose' nor 'docker-compose' command is available." >&2
+  exit 1
 fi

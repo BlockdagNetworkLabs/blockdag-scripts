@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  miner_node:
+  relay_node:
     image: blockdagnetwork/awakening:v0.0.2
-    container_name: blockdag-miner-testnet
+    container_name: blockdag-relay-testnet
     restart: unless-stopped
     ports:
       - "38131:38131"
@@ -16,12 +16,14 @@ services:
       - ./bin/bdag/logs:/bdag/logs
     environment:
       NODE_ARGS: >-
-        --testnet --rpclisten=0.0.0.0:38131 --notls --rpcuser=test --rpcpass=test
-        --miner
-        --evmenv="--http --http.port=18545 --http.addr=0.0.0.0
+        --testnet --rpclisten=127.0.0.1:28131 --notls --rpcuser=test --rpcpass=test
+        --walletpass=test
+        --evmenv="--http --http.port=28545 --http.addr=127.0.0.1
         --http.api=net,web3,eth,bdag,txpool,debug --allow-insecure-unlock --ws
         --ws.addr=0.0.0.0 --ws.port=18546 --rpc.allow-unprotected-txs --gcmode=archive"
-        --miningaddr=${MINING_ADDRESS} --generate --datadir=/bdag/data
+        --datadir=/bdag/data --gateway --gateway.dag.http.port=38131
+        --gateway.dag.http.addr=0.0.0.0 --gateway.evm.http.port=18545
+        --gateway.evm.http.addr=0.0.0.0
         --addpeer=/ip4/13.245.135.249/tcp/18150/p2p/16Uiu2HAm3hjo65MZvBEJuVASMoSDsXfMzC8m2ZEAeK8CjjJkRvf9
       RPC_URL: ws://127.0.0.1:18546
       CONTRACT_ADDRESS: 0x96C22c86B91235165eBF1F0f41FbeadA9C323A7A

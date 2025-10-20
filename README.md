@@ -96,7 +96,9 @@ Optional for Linux users:
 4. **Allow Docker to create local directories**
    Ensure your user has permissions to write to `bin/bdag/`. The directory is created automatically, but on Linux you may need to `chown` it if Docker runs as root.
 
----
+2. **Configure your mining address**
+   - Option A: edit `.env` and set `PUB_ETH_ADDR=<your_evm_wallet_address>`.
+   - Option B: create `wallet.txt` where the last line contains your wallet address (e.g. exported from another tool).
 
 ## Address Format Update (EVM Only)
 
@@ -213,7 +215,7 @@ docker compose down --volumes
 - Logs populate `bin/bdag/logs/` and may contain sensitive operational details; sanitize before sharing.
 - Consider rotating Docker logs or mounting external storage if running long-term.
 
----
+`docker-compose.yml` launches a single service named `nodeworker` based on `abhishek1857/blockdag:worker-20250923-102625`. Key settings:
 
 ## Reference: Docker Compose Service
 

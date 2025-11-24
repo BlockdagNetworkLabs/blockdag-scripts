@@ -31,6 +31,7 @@ blockdag.sh             # Primary launcher – loads wallet and calls node.sh
 node.sh                 # Starts docker compose with the provided mining address
 restart.sh              # Stops current stack, removes image, restarts with existing data
 restartWithCleanup.sh   # Same as above, but wipes ./bin/bdag before restart
+stop.sh                 # Stops running containers for a specific role or all roles
 install_docker.sh       # Ubuntu-based helper to install Docker & docker-compose
 docker-compose.yml      # Defines the BlockDAG worker service and persisted volumes
 bin/bdag/data           # Blockchain data volume (created at runtime)
@@ -180,6 +181,7 @@ archive deployments.
 
 Use the helper scripts at the repository root:
 
+- `stop.sh [role|all]` – stops containers for the selected role (defaults to `miner`). Pass `all` to shut down miner, full, and relay stacks in one go.
 - `restart.sh [role]` – shuts down Docker Compose for the selected role (defaults to `miner`), removes the image referenced by the compose file, and relaunches using your configured wallet.
 - `restartWithCleanup.sh [role]` – same as above but also clears `./bin/bdag/*` (data, logs, any cached binaries). **Back up your wallet before running this.**
 - `install_docker.sh` – Ubuntu/WSL convenience installer. Review the script before executing (`sudo ./install_docker.sh`).
@@ -219,7 +221,7 @@ docker compose down --volumes
 
 ## Reference: Docker Compose Service
 
-`docker-compose.yml` launches a single service named `nodeworker` based on `blockdagnetwork/awakening:v0.0.2`. Key settings:
+`docker-compose.yml` launches a single service named `nodeworker` based on `blockdagnetwork/awakening:v0.0.3`. Key settings:
 
 - **Ports**: `38131` (RPC), `18545` (HTTP), `18546` (WebSocket), `18150` (peer).
 - **Volumes**:

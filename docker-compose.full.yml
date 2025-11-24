@@ -2,7 +2,7 @@ version: '3'
 
 services:
   full_node:
-    image: blockdagnetwork/awakening:v0.0.2
+    image: blockdagnetwork/awakening:v0.0.3
     container_name: blockdag-full-testnet
     restart: unless-stopped
     ports:

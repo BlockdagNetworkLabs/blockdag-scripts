@@ -25,6 +25,13 @@ fi
 
 export MINING_ADDRESS="$mining_address"
 
+# Force amd64 image on ARM hosts since the blockdag image is not multi-arch.
+arch=$(uname -m)
+if [ -z "${DOCKER_DEFAULT_PLATFORM:-}" ] && [[ "$arch" =~ ^(arm64|aarch64)$ ]]; then
+  export DOCKER_DEFAULT_PLATFORM=linux/amd64
+  echo "Detected $arch host; using DOCKER_DEFAULT_PLATFORM=$DOCKER_DEFAULT_PLATFORM"
+fi
+
 if docker compose version >/dev/null 2>&1; then
   echo "Using docker compose with file $compose_path"
   docker compose -f "$compose_path" up -d

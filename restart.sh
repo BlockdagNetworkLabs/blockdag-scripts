@@ -10,7 +10,7 @@ usage() {
   cat <<'USAGE'
 Usage: ./restart.sh [ROLE]
 
-ROLE matches the options from blockdag.sh (miner, full, relay).
+ROLE matches the options from blockdag.sh (miner, full).
 If omitted, the miner template is used. NODE_ROLE environment variable can also
 set the default role.
 USAGE
@@ -22,9 +22,6 @@ resolve_compose_file() {
   case "$role_input" in
     full)
       echo "docker-compose.full.yml"
-      ;;
-    relay)
-      echo "docker-compose.relay.yml"
       ;;
     miner|default)
       echo "docker-compose.yml"
@@ -49,6 +46,10 @@ if ! COMPOSE_FILE=$(resolve_compose_file "$ROLE_INPUT"); then
   usage >&2
   exit 1
 fi
+NEEDS_MINING_ADDR=false
+if [ "$COMPOSE_FILE" = "docker-compose.yml" ]; then
+  NEEDS_MINING_ADDR=true
+fi
 
 if [[ "$COMPOSE_FILE" = /* ]]; then
   compose_path="$COMPOSE_FILE"
@@ -62,14 +63,15 @@ fi
    # shellcheck disable=SC1090
    source "$ENV_FILE"
  fi
- 
- if [ -z "${PUB_ETH_ADDR:-}" ]; then
-   if [ -f "$SCRIPT_DIR/wallet.txt" ]; then
-     PUB_ETH_ADDR=$(tail -n 1 "$SCRIPT_DIR/wallet.txt")
-   else
-     echo "PUB_ETH_ADDR not set. Please populate $ENV_FILE or wallet.txt" >&2
-     exit 1
-   fi
+
+ PUB_ETH_ADDR="${PUB_ETH_ADDR:-}"
+ if [ -z "$PUB_ETH_ADDR" ] && [ -f "$SCRIPT_DIR/wallet.txt" ]; then
+   PUB_ETH_ADDR=$(tail -n 1 "$SCRIPT_DIR/wallet.txt")
+ fi
+
+ if $NEEDS_MINING_ADDR && [ -z "$PUB_ETH_ADDR" ]; then
+   echo "PUB_ETH_ADDR not set. Please populate $ENV_FILE or wallet.txt" >&2
+   exit 1
  fi
  
 if docker compose version >/dev/null 2>&1; then

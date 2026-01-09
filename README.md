@@ -115,7 +115,6 @@ Optional for Linux users:
    ```bash
    ./blockdag.sh               # default miner node
    ./blockdag.sh full          # validation without mining
-   ./blockdag.sh relay         # gateway relay mode
    ```
    The script resolves your address, exports it as `PUB_ETH_ADDR`, selects the matching compose file, and calls node.sh`. Set `NODE_ROLE=<role>` in your
    environment if you prefer not to pass a CLI argument.
@@ -143,15 +142,13 @@ This repository now ships dedicated Docker Compose files for each supported node
 |-----------|--------------|------------|
 | Miner | `docker-compose.yml` | Enables mining via `--miner`/`--generate` and exposes JSON-RPC/WebSocket endpoints for local tooling. |
 | Full | `docker-compose.full.yml` | Syncs and validates the network without mining. |
-| Relay | `docker-compose.relay.yml` | Runs the gateway stack (`--gateway`) to proxy DAG/EVM traffic for external clients. |
 
 > **Tip:** Any of the non-archive templates can double as an archive node just
 > by keeping the default `--gcmode=archive`. Removing that flag reverts to the
 > previous pruned behaviour.
 
 To start a specific role with the helper script, run `./blockdag.sh <role>`. For
-example, `./blockdag.sh relay` loads `docker-compose.relay.yml` while
-`./blockdag.sh full` launches the `docker-compose.full.yml`. Use
+example, `./blockdag.sh full` launches the `docker-compose.full.yml`. Use
 `./blockdag.sh` to fall back to the default `docker-compose.yml` miner node.
 
 ### Launching a specific node type
@@ -181,7 +178,7 @@ archive deployments.
 
 Use the helper scripts at the repository root:
 
-- `stop.sh [role|all]` – stops containers for the selected role (defaults to `miner`). Pass `all` to shut down miner, full, and relay stacks in one go.
+- `stop.sh [role|all]` – stops containers for the selected role (defaults to `miner`). Pass `all` to shut down miner and full stacks in one go.
 - `restart.sh [role]` – shuts down Docker Compose for the selected role (defaults to `miner`), removes the image referenced by the compose file, and relaunches using your configured wallet.
 - `restartWithCleanup.sh [role]` – same as above but also clears `./bin/bdag/*` (data, logs, any cached binaries). **Back up your wallet before running this.**
 - `install_docker.sh` – Ubuntu/WSL convenience installer. Review the script before executing (`sudo ./install_docker.sh`).

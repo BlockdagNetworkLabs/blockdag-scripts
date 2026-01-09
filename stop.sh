@@ -11,7 +11,6 @@ Usage: ./stop.sh [ROLE]
 ROLE may be one of:
   miner      - stop stack defined in docker-compose.yml (default)
   full       - stop stack defined in docker-compose.full.yml
-  relay      - stop stack defined in docker-compose.relay.yml
   all        - stop all of the above stacks
 
 You can also set NODE_ROLE to pick the default role instead of passing ROLE.
@@ -23,13 +22,10 @@ resolve_compose_files() {
 
   case "$role_input" in
     all)
-      echo "docker-compose.yml docker-compose.full.yml docker-compose.relay.yml"
+      echo "docker-compose.yml docker-compose.full.yml"
       ;;
     full)
       echo "docker-compose.full.yml"
-      ;;
-    relay)
-      echo "docker-compose.relay.yml"
       ;;
     miner|default)
       echo "docker-compose.yml"

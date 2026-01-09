@@ -11,7 +11,6 @@ Usage: ./blockdag.sh [ROLE]
 ROLE may be one of:
   miner      - use docker-compose.yml (default)
   full       - use docker-compose.full.yml
-  relay      - use docker-compose.relay.yml
 
 You can also set NODE_ROLE environment variable instead of passing ROLE.
 USAGE
@@ -27,9 +26,6 @@ case "$ROLE_INPUT" in
   full)
     COMPOSE_FILE="docker-compose.full.yml"
     ;;
-  relay)
-    COMPOSE_FILE="docker-compose.relay.yml"
-    ;;
   default|miner)
     COMPOSE_FILE="docker-compose.yml"
     ;;
@@ -41,6 +37,10 @@ case "$ROLE_INPUT" in
 esac
 
 ENV_FILE="$SCRIPT_DIR/.env"
+NEEDS_MINING_ADDR=false
+if [ "$COMPOSE_FILE" = "docker-compose.yml" ]; then
+  NEEDS_MINING_ADDR=true
+fi
 
 # load PUB_ETH_ADDR from .env if present
 if [ -f "$ENV_FILE" ]; then
@@ -48,13 +48,14 @@ if [ -f "$ENV_FILE" ]; then
   source "$ENV_FILE"
 fi
 
-if [ -z "${PUB_ETH_ADDR:-}" ]; then
-  if [ -f "$SCRIPT_DIR/wallet.txt" ]; then
-    PUB_ETH_ADDR=$(tail -n 1 "$SCRIPT_DIR/wallet.txt")
-  else
-    echo "PUB_ETH_ADDR not set. Please create $ENV_FILE or wallet.txt" >&2
-    exit 1
-  fi
+PUB_ETH_ADDR="${PUB_ETH_ADDR:-}"
+if [ -z "$PUB_ETH_ADDR" ] && [ -f "$SCRIPT_DIR/wallet.txt" ]; then
+  PUB_ETH_ADDR=$(tail -n 1 "$SCRIPT_DIR/wallet.txt")
+fi
+
+if $NEEDS_MINING_ADDR && [ -z "$PUB_ETH_ADDR" ]; then
+  echo "PUB_ETH_ADDR not set. Please create $ENV_FILE or wallet.txt" >&2
+  exit 1
 fi
 
 export PUB_ETH_ADDR

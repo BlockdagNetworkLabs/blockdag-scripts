@@ -24,6 +24,18 @@ if [ ! -f "$compose_path" ]; then
 fi
 
 export MINING_ADDRESS="$mining_address"
+if [ -n "${MINING_ADDRESS:-}" ]; then
+  export MINING_ADDR_FLAG="--miner --miningaddr=$MINING_ADDRESS"
+else
+  export MINING_ADDR_FLAG=""
+fi
+
+# Force amd64 image on ARM hosts since the blockdag image is not multi-arch.
+arch=$(uname -m)
+if [ -z "${DOCKER_DEFAULT_PLATFORM:-}" ] && [[ "$arch" =~ ^(arm64|aarch64)$ ]]; then
+  export DOCKER_DEFAULT_PLATFORM=linux/amd64
+  echo "Detected $arch host; using DOCKER_DEFAULT_PLATFORM=$DOCKER_DEFAULT_PLATFORM"
+fi
 
 # Force amd64 image on ARM hosts since the blockdag image is not multi-arch.
 arch=$(uname -m)
